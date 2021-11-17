@@ -178,12 +178,13 @@ authRoute.get(
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-authRoute.get(
-  "/google/callback",
+authRoute.get("/google/callback", (req, res, next) => {
   passport.authenticate("google", {
     failureRedirect: "/auth/login",
     successRedirect: "/",
-  })
-);
+    failureFlash: true,
+  })(req, res, next);
+  req.flash("success_msg", "Login Successful.");
+});
 // exporting authRoute
 module.exports = authRoute;
