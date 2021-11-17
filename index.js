@@ -7,6 +7,7 @@ const morgan = require("morgan");
 const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
+const cookieParser = require("cookie-parser");
 
 // creating express app
 const app = express();
@@ -23,7 +24,10 @@ app.use(express.static(staticPath));
 
 // use express parsers
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
+
+// cookie parser middleware
+app.use(cookieParser());
 
 // Express session middleware
 app.use(
@@ -31,6 +35,8 @@ app.use(
     secret: "Thereisnosecretwithme",
     resave: true,
     saveUninitialized: true,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 },
+    resave: false,
   })
 );
 
@@ -42,6 +48,10 @@ app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
   res.locals.error = req.flash("error");
+
+  res.locals.session = req.session;
+  res.locals.user = req.user;
+  res.locals.authenticated = req.isAuthenticated;
   next();
 });
 
@@ -49,8 +59,9 @@ app.use((req, res, next) => {
 app.use(passport.initialize());
 app.use(passport.session());
 require("./middlewares/passportLocal")(passport);
+require("./middlewares/passportGoogle")(passport);
 
-// using other middlewarres
+// using other middlewares
 app.use(morgan("tiny"));
 
 // setting up router
@@ -62,6 +73,10 @@ app.set("view engine", "ejs");
 
 // setting up views path
 app.set("views", viewsPath);
+
+app.get("*", function (req, res) {
+  res.status(404).render("error/404Error");
+});
 
 // running server
 app.listen(port, () => console.log(`Server running at ${port}`));

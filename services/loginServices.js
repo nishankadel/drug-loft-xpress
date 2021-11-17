@@ -40,6 +40,26 @@ let findUserByEmail = (email) => {
   });
 };
 
+let findUserByGoogleId = (email) => {
+  return new Promise((resolve, reject) => {
+    try {
+      connection.query(
+        " SELECT * FROM user WHERE googleId = ? ",
+        email,
+        function (err, rows) {
+          if (err) {
+            reject(err);
+          }
+          let user = rows[0];
+          resolve(user);
+        }
+      );
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
 let findUserById = (id) => {
   return new Promise((resolve, reject) => {
     try {
@@ -61,19 +81,6 @@ let findUserById = (id) => {
 };
 
 let comparePassword = async (password, userObject) => {
-  //   return new Promise(async (resolve, reject) => {
-  //     try {
-  //       await bcrypt.compare(password, userObject).then((isMatch) => {
-  //         if (isMatch) {
-  //           resolve(true);
-  //         } else {
-  //           resolve(`The password that you've entered is incorrect`);
-  //         }
-  //       });
-  //     } catch (e) {
-  //       reject(e);
-  //     }
-  //   });
   bcrypt.compare(password, userObject, (err, isMatch) => {
     if (err) throw err;
 
@@ -85,5 +92,6 @@ module.exports = {
   handleLogin: handleLogin,
   findUserByEmail: findUserByEmail,
   findUserById: findUserById,
+  findUserByGoogleId: findUserByGoogleId,
   comparePassword: comparePassword,
 };

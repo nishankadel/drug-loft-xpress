@@ -18,12 +18,8 @@ module.exports = function (passport) {
             });
           }
           if (user) {
-            console.log(user.password);
-
             bcrypt.compare(password, user.password, (err, isMatch) => {
               if (err) throw err;
-
-              console.log(isMatch);
               if (isMatch) {
                 return done(null, user);
               } else {

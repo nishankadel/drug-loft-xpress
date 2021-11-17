@@ -1,7 +1,6 @@
 <%- include("./partials/header") %> <%- include("./partials/navbar") %> <%-
-include ('./partials/messages') %> hello register here <br />
-<a href="/auth/register">Click me</a>
-<br /><br />
-login here <br />
-<a href="/auth/login">Click me</a>
+include ('./partials/messages') %> 
+<% if (user) { %> <%= user.fullname %>
+
+     <%}%>
 <%- include("./partials/footer") %>

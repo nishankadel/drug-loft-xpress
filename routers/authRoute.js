@@ -4,26 +4,31 @@ const connection = require("../db/connection");
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const { sendEmail } = require("../middlewares/sendEmail");
+const { unEnsuredAuth } = require("../middlewares/protectedRoute");
 
 //creating authRoute
 const authRoute = express.Router();
 
-// useful functions
-
 // GET ROUTER CODE GOES HERE
 // GET Router for Login Page
-authRoute.get("/login", async (req, res) => {
+authRoute.get("/login", unEnsuredAuth, async (req, res) => {
   res.render("auth/login");
 });
 
 // GET Router for register Page
-authRoute.get("/register", async (req, res) => {
+authRoute.get("/register", unEnsuredAuth, async (req, res) => {
   res.render("auth/register");
 });
 
 // GET Router for email verification Page
-authRoute.get("/email-verification", async (req, res) => {
+authRoute.get("/email-verification", unEnsuredAuth, async (req, res) => {
   res.render("auth/verification");
+});
+
+authRoute.get("/logout", async (req, res) => {
+  req.logout();
+  req.flash("success_msg", "Logout successfully.");
+  res.redirect("/auth/login");
 });
 
 // POST ROUTER CODE GOES HERE
@@ -39,7 +44,6 @@ authRoute.post("/login", async (req, res, next) => {
 
 // generating token randomly
 const random = Math.floor(100000 + Math.random() * 900000);
-console.log("Random: " + random);
 
 // POST Router for register Page
 authRoute.post("/register", async (req, res) => {
@@ -56,6 +60,7 @@ authRoute.post("/register", async (req, res) => {
     const passwordRegeex = new RegExp(
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
     );
+
     const phoneRegex = new RegExp(/98[0-9]{8}$/);
 
     if (fullname.length < 3) {
@@ -149,7 +154,6 @@ authRoute.post("/register", async (req, res) => {
 authRoute.post("/email-verification", async (req, res) => {
   try {
     const { verificationcode } = req.body;
-    console.log("Code: " + verificationcode);
 
     if (verificationcode == random) {
       req.flash(
@@ -169,5 +173,17 @@ authRoute.post("/email-verification", async (req, res) => {
   }
 });
 
+authRoute.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+authRoute.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/auth/login",
+    successRedirect: "/",
+  })
+);
 // exporting authRoute
 module.exports = authRoute;
