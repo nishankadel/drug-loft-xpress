@@ -173,7 +173,7 @@
         <span>Gallery</span>
       </a>
       <a
-        href="#"
+        href="/product"
         class="
           lg:inline-flex lg:w-auto
           w-full
@@ -205,6 +205,7 @@
         <span>Contact Us</span>
       </a>
 
+      <%if (user) { %>
       <a
         href="#"
         class="
@@ -265,26 +266,6 @@
       </a>
 
       <a
-        href="/auth/login"
-        class="
-          lg:inline-flex lg:w-auto
-          w-full
-          px-3
-          py-2
-          rounded
-          text-gray-400
-          items-center
-          justify-center
-          hover:bg-gray-900 hover:text-white
-        "
-      >
-        <span
-          ><i class="fas fa-sign-in-alt" style="margin-right: 5px"></i>Join
-          Now</span
-        >
-      </a>
-
-      <a
         href="/auth/logout"
         class="
           lg:inline-flex lg:w-auto
@@ -300,10 +281,35 @@
         "
       >
         <span
-          ><i class="fas fa-power-off" style="margin-right: 5px"></i> Nishan
-          Kadel</span
+          ><i class="fas fa-power-off" style="margin-right: 5px"></i> <%=
+          user.fullname%></span
         >
       </a>
+
+      <%} else { %>
+
+      <a
+        href="/auth/login"
+        class="
+          lg:inline-flex lg:w-auto
+          w-full
+          px-3
+          py-2
+          ml-10
+          rounded
+          text-gray-400
+          items-center
+          justify-center
+          hover:bg-gray-900 hover:text-white
+        "
+      >
+        <span
+          ><i class="fas fa-sign-in-alt" style="margin-right: 5px"></i>Join
+          Now</span
+        >
+      </a>
+
+      <%} %>
     </div>
   </div>
 </nav>

@@ -49,9 +49,6 @@ app.use((req, res, next) => {
   res.locals.error_msg = req.flash("error_msg");
   res.locals.error = req.flash("error");
 
-  res.locals.session = req.session;
-  res.locals.user = req.user;
-  res.locals.authenticated = req.isAuthenticated;
   next();
 });
 
@@ -61,11 +58,18 @@ app.use(passport.session());
 require("./middlewares/passportLocal")(passport);
 require("./middlewares/passportGoogle")(passport);
 
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  res.locals.user = req.user;
+  res.locals.authenticated = req.isAuthenticated;
+  next();
+});
+
 // using other middlewares
 app.use(morgan("tiny"));
 
 // setting up router
-app.use("/", require("./routers/homeRoute"));
+app.use("/", require("./routers/normalRoute"));
 app.use("/auth", require("./routers/authRoute"));
 
 // setting up view engine

@@ -1,6 +1,6 @@
 <%- include("./partials/header") %> <%- include("./partials/navbar") %> <%-
-include ('./partials/messages') %> 
-<% if (user) { %> <%= user.fullname %>
+include ('./partials/messages') %> <% if (user) { %> <%= user.fullname %>
 
-     <%}%>
-<%- include("./partials/footer") %>
+<img src="<%= user.avatar %>" alt="pic" />
+
+<%}%> <%- include("./partials/footer") %>
