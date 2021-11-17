@@ -6,6 +6,7 @@ require("dotenv").config();
 const morgan = require("morgan");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
 
 // creating express app
 const app = express();
@@ -43,6 +44,11 @@ app.use((req, res, next) => {
   res.locals.error = req.flash("error");
   next();
 });
+
+// passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+require("./middlewares/passportLocal")(passport);
 
 // using other middlewarres
 app.use(morgan("tiny"));

@@ -1,31 +1,47 @@
 // importing required modules
 const express = require("express");
 const connection = require("../db/connection");
-
+const passport = require("passport");
 const bcrypt = require("bcryptjs");
+const { sendEmail } = require("../middlewares/sendEmail");
 
 //creating authRoute
 const authRoute = express.Router();
 
+// useful functions
+
+// GET ROUTER CODE GOES HERE
 // GET Router for Login Page
 authRoute.get("/login", async (req, res) => {
   res.render("auth/login");
 });
 
-// POST Router for Login Page
-authRoute.post("/login", async (req, res) => {
-  try {
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-// GET Router for Login Page
+// GET Router for register Page
 authRoute.get("/register", async (req, res) => {
   res.render("auth/register");
 });
 
+// GET Router for email verification Page
+authRoute.get("/email-verification", async (req, res) => {
+  res.render("auth/verification");
+});
+
+// POST ROUTER CODE GOES HERE
 // POST Router for Login Page
+authRoute.post("/login", async (req, res, next) => {
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/auth/login",
+    failureFlash: true,
+  })(req, res, next);
+  req.flash("success_msg", "Login Successful.");
+});
+
+// generating token randomly
+const random = Math.floor(100000 + Math.random() * 900000);
+console.log("Random: " + random);
+
+// POST Router for register Page
 authRoute.post("/register", async (req, res) => {
   // get data from form fields
   const fullname = req.body.fullname;
@@ -104,15 +120,49 @@ authRoute.post("/register", async (req, res) => {
             [fullname, email, phonenumber, address, hashPassword],
             (err, result, fields) => {
               if (err) throw err;
+
+              // send email
+              sendEmail(
+                email,
+                "d-3a474186823343969983726f982c4dd8",
+                fullname,
+                random
+              );
+
+              // send flash message
               req.flash(
                 "success_msg",
-                "Successfully registered your account, you can login now."
+                "Verification Code is sent to your email. Please check your inbox."
               );
-              res.redirect("/auth/login");
+              res.redirect("/auth/email-verification");
             }
           );
         }
       });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// Post Router for email verification Page
+authRoute.post("/email-verification", async (req, res) => {
+  try {
+    const { verificationcode } = req.body;
+    console.log("Code: " + verificationcode);
+
+    if (verificationcode == random) {
+      req.flash(
+        "success_msg",
+        "Successfully registered and verified account. Login now."
+      );
+      res.redirect("/auth/login");
+    } else {
+      req.flash(
+        "error_msg",
+        "Verification code doesn't match. Please check your email."
+      );
+      res.redirect("/auth/login");
     }
   } catch (error) {
     console.log(error);
