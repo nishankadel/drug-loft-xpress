@@ -1,0 +1,271 @@
+<%- include("../partials/header") %> <%- include("../partials/navbar") %> <% if
+(user.service_provider == "local"){%>
+<div class="container mx-auto">
+  <div class="flex justify-center px-6 my-12">
+    <div class="w-full xl:w-3/4 lg:w-11/12 flex">
+      <div
+        class="
+          w-full
+          lg:w-7/12
+          bg-white
+          p-5
+          mx-auto
+          rounded-lg
+          lg:rounded-l-none
+        "
+      >
+        <h3 class="pt-4 text-2xl text-center">Edit Your Profile</h3>
+        <form
+          class="px-8 pt-6 pb-8 mb-4 bg-white rounded"
+          action="/user/edit-profile"
+          method="post"
+        >
+          <div class="mb-4 md:flex md:justify-between">
+            <div class="mb-4 md:mr-2 md:mb-0">
+              <label class="block mb-2 text-sm font-bold text-gray-700">
+                Full Name
+              </label>
+              <input
+                class="
+                  w-full
+                  px-3
+                  py-2
+                  text-sm
+                  leading-tight
+                  text-gray-700
+                  border
+                  rounded
+                  shadow
+                  appearance-none
+                  focus:outline-none focus:shadow-outline
+                "
+                type="text"
+                value="<%=user.fullname%>"
+                name="fullname"
+                required
+              />
+            </div>
+            <div class="md:ml-2">
+              <label class="block mb-2 text-sm font-bold text-gray-700">
+                Phone Number
+              </label>
+              <input
+                class="
+                  w-full
+                  px-3
+                  py-2
+                  text-sm
+                  leading-tight
+                  text-gray-700
+                  border
+                  rounded
+                  shadow
+                  appearance-none
+                  focus:outline-none focus:shadow-outline
+                "
+                type="number"
+                value="<%=user.phonenumber%>"
+                name="phonenumber"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="block mb-2 text-sm font-bold text-gray-700">
+              Email
+            </label>
+            <input
+              class="
+                w-full
+                px-3
+                py-2
+                mb-3
+                text-sm
+                leading-tight
+                text-gray-700
+                border
+                rounded
+                shadow
+                appearance-none
+                focus:outline-none focus:shadow-outline
+              "
+              type="email"
+              value="<%=user.email%>"
+              required
+              name="email"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label class="block mb-2 text-sm font-bold text-gray-700">
+              Address
+            </label>
+            <input
+              class="
+                w-full
+                px-3
+                py-2
+                mb-3
+                text-sm
+                leading-tight
+                text-gray-700
+                border
+                rounded
+                shadow
+                appearance-none
+                focus:outline-none focus:shadow-outline
+              "
+              type="text"
+              value="<%=user.address%>"
+              required
+              name="address"
+            />
+          </div>
+          <div class="mb-6 text-center">
+            <button
+              class="
+                w-full
+                px-4
+                py-2
+                font-bold
+                text-white
+                bg-blue-500
+                rounded-full
+                hover:bg-blue-700
+                focus:outline-none focus:shadow-outline
+              "
+              type="submit"
+            >
+              Submit
+            </button>
+          </div>
+          <hr class="mb-6 border-t" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<%}%> <% if (user.service_provider == "google"){%>
+<div class="container mx-auto">
+  <div class="flex justify-center px-6 my-12">
+    <div class="w-full xl:w-3/4 lg:w-11/12 flex">
+      <div
+        class="
+          w-full
+          lg:w-7/12
+          bg-white
+          p-5
+          mx-auto
+          rounded-lg
+          lg:rounded-l-none
+        "
+      >
+        <h3 class="pt-4 text-2xl text-center">Edit Your Profile</h3>
+        <form
+          class="px-8 pt-6 pb-8 mb-4 bg-white rounded"
+          action="/user/edit-profile"
+          method="post"
+        >
+          <div class="mb-4">
+            <label class="block mb-2 text-sm font-bold text-gray-700">
+              Email
+            </label>
+            <input
+              class="
+                w-full
+                px-3
+                py-2
+                mb-3
+                text-sm
+                leading-tight
+                text-gray-700
+                border
+                rounded
+                shadow
+                appearance-none
+                focus:outline-none focus:shadow-outline
+              "
+              type="email"
+              value="<%=user.email%>"
+              required
+              name="email"
+              readonly
+            />
+          </div>
+          <div class="mb-4 md:flex md:justify-between">
+            <div class="mb-4 md:mr-2 md:mb-0">
+              <label class="block mb-2 text-sm font-bold text-gray-700">
+                Address
+              </label>
+              <input
+                class="
+                  w-full
+                  px-3
+                  py-2
+                  text-sm
+                  leading-tight
+                  text-gray-700
+                  border
+                  rounded
+                  shadow
+                  appearance-none
+                  focus:outline-none focus:shadow-outline
+                "
+                type="text"
+                value="<%=user.address%>"
+                required
+                name="address"
+              />
+            </div>
+            <div class="md:ml-2">
+              <label class="block mb-2 text-sm font-bold text-gray-700">
+                Phone Number
+              </label>
+              <input
+                class="
+                  w-full
+                  px-3
+                  py-2
+                  text-sm
+                  leading-tight
+                  text-gray-700
+                  border
+                  rounded
+                  shadow
+                  appearance-none
+                  focus:outline-none focus:shadow-outline
+                "
+                type="number"
+                value="<%=user.phonenumber%>"
+                required
+                name="phonenumber"
+              />
+            </div>
+          </div>
+
+          <div class="mb-6 text-center">
+            <button
+              class="
+                w-full
+                px-4
+                py-2
+                font-bold
+                text-white
+                bg-blue-500
+                rounded-full
+                hover:bg-blue-700
+                focus:outline-none focus:shadow-outline
+              "
+              type="submit"
+            >
+              Submit
+            </button>
+          </div>
+          <hr class="mb-6 border-t" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<%}%> <%- include("../partials/footer") %>

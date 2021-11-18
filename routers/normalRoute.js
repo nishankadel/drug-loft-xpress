@@ -14,5 +14,6 @@ normalRoute.get("/product", ensureAuth, (req, res) => {
   res.send("product page");
 });
 
+
 // exporting normalRoute
 module.exports = normalRoute;

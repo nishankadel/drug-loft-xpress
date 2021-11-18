@@ -71,6 +71,7 @@ app.use(morgan("tiny"));
 // setting up router
 app.use("/", require("./routers/normalRoute"));
 app.use("/auth", require("./routers/authRoute"));
+app.use("/user", require("./routers/userRoute"));
 
 // setting up view engine
 app.set("view engine", "ejs");

@@ -20,21 +20,58 @@ module.exports = function (passport) {
           if (user) {
             done(null, user);
           } else {
-            var sql =
-              "insert into user(fullname, email, avatar, googleId) values (?,?,?,?);";
-            connection.query(
-              sql,
-              [
-                profile.displayName,
-                profile.emails[0].value,
-                profile.photos[0].value,
-                profile.id,
-              ],
-              (err, result, fields) => {
-                if (err) throw err;
-              }
-            );
-            done(null, user);
+            loginServices
+              .findUserByEmail(profile.emails[0].value)
+              .then(async (user) => {
+                if (typeof user != "undefined") {
+                  if (user.service_provider == "local") {
+                    return done(null, false, {
+                      message:
+                        "That email is registered using email & password.",
+                    });
+                  } else {
+                    let s_p = "google";
+                    var sql =
+                      "insert into user(fullname, email, avatar, googleId, service_provider) values (?,?,?,?,?);";
+                    connection.query(
+                      sql,
+                      [
+                        profile.displayName,
+                        profile.emails[0].value,
+                        profile.photos[0].value,
+                        profile.id,
+                        s_p,
+                      ],
+                      (err, result, fields) => {
+                        if (err) {
+                          if (err) throw err;
+                        }
+                      }
+                    );
+                    done(null, user);
+                  }
+                } else {
+                  let s_p = "google";
+                  var sql =
+                    "insert into user(fullname, email, avatar, googleId, service_provider) values (?,?,?,?,?);";
+                  connection.query(
+                    sql,
+                    [
+                      profile.displayName,
+                      profile.emails[0].value,
+                      profile.photos[0].value,
+                      profile.id,
+                      s_p,
+                    ],
+                    (err, result, fields) => {
+                      if (err) {
+                        if (err) throw err;
+                      }
+                    }
+                  );
+                  done(null, user);
+                }
+              });
           }
         });
       }
@@ -56,3 +93,9 @@ module.exports = function (passport) {
       });
   });
 };
+
+// if (user.service_provider == "local") {
+//   return done(null, false, {
+//     message: "That email is registered using email & password.",
+//   });
+// }

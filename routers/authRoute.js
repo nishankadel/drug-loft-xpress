@@ -25,10 +25,40 @@ authRoute.get("/email-verification", unEnsuredAuth, async (req, res) => {
   res.render("auth/verification");
 });
 
+// logout route
 authRoute.get("/logout", async (req, res) => {
   req.logout();
   req.flash("success_msg", "Logout successfully.");
   res.redirect("/auth/login");
+});
+
+// forgot password router
+authRoute.get("/forgot-password", unEnsuredAuth, async (req, res) => {
+  res.render("auth/forgotPassword");
+});
+
+// reset password router
+authRoute.get(
+  "/reset-password",
+  unEnsuredAuth,
+  unEnsuredAuth,
+  async (req, res) => {
+    res.render("auth/resetPassword");
+  }
+);
+
+authRoute.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+authRoute.get("/google/callback", (req, res, next) => {
+  passport.authenticate("google", {
+    failureRedirect: "/auth/login",
+    successRedirect: "/",
+    failureFlash: true,
+  })(req, res, next);
+  req.flash("success_msg", "Login Successful.");
 });
 
 // POST ROUTER CODE GOES HERE
@@ -44,6 +74,7 @@ authRoute.post("/login", async (req, res, next) => {
 
 // generating token randomly
 const random = Math.floor(100000 + Math.random() * 900000);
+console.log(random);
 
 // POST Router for register Page
 authRoute.post("/register", async (req, res) => {
@@ -133,7 +164,6 @@ authRoute.post("/register", async (req, res) => {
                 fullname,
                 random
               );
-
               // send flash message
               req.flash(
                 "success_msg",
@@ -166,25 +196,12 @@ authRoute.post("/email-verification", async (req, res) => {
         "error_msg",
         "Verification code doesn't match. Please check your email."
       );
-      res.redirect("/auth/login");
+      res.redirect("/auth/email-verification");
     }
   } catch (error) {
     console.log(error);
   }
 });
 
-authRoute.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-authRoute.get("/google/callback", (req, res, next) => {
-  passport.authenticate("google", {
-    failureRedirect: "/auth/login",
-    successRedirect: "/",
-    failureFlash: true,
-  })(req, res, next);
-  req.flash("success_msg", "Login Successful.");
-});
 // exporting authRoute
 module.exports = authRoute;
