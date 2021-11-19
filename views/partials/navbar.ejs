@@ -1,49 +1,5 @@
-<!-- top nav bar  -->
-<div class="flex flex-wrap place-items-center" id="top-navbar">
-  <section class="relative mx-auto">
-    <!-- navbar -->
-    <nav class="flex justify-between bg-gray-700 text-white w-screen">
-      <div class="px-5 xl:px-12 py-2 flex w-full items-center">
-        <ul class="hidden md:flex px-4 mx-auto font-heading space-x-12">
-          <li><a class="hover:text-gray-200">Drug Loft Xpress</a></li>
-          <li><a class="hover:text-gray-200">9817029767</a></li>
-          <li><a class="hover:text-gray-200">nishankadel39@gmail.com</a></li>
-          <li><a class="hover:text-gray-200">Itahari-9, Nepal</a></li>
-        </ul>
-      </div>
-    </nav>
-  </section>
-</div>
-
-<!-- Does this resource worth a follow? -->
-<!-- <div class="absolute bottom-0 right-0 mb-4 mr-4 z-10">
-  <div>
-    <a
-      title="Follow me on twitter"
-      href="https://www.twitter.com/asad_codes"
-      target="_blank"
-      class="
-        block
-        w-16
-        h-16
-        rounded-full
-        transition-all
-        shadow
-        hover:shadow-lg
-        transform
-        hover:scale-110 hover:rotate-12
-      "
-    >
-      <img
-        class="object-cover object-center w-full h-full rounded-full"
-        src="https://www.imore.com/sites/imore.com/files/styles/large/public/field/image/2019/12/twitter-logo.jpg"
-      />
-    </a>
-  </div>
-</div> -->
-
+<%- include('topNav') %>
 <!-- Main nav bar  -->
-
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css"
@@ -54,6 +10,7 @@
   href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700;900&display=swap"
   rel="stylesheet"
 />
+
 <style>
   html,
   body {
@@ -109,7 +66,7 @@
       "
     >
       <a
-        href="#"
+        href="/"
         class="
           lg:inline-flex lg:w-auto
           w-full
@@ -124,56 +81,9 @@
       >
         <span>Home</span>
       </a>
+
       <a
-        href="#"
-        class="
-          lg:inline-flex lg:w-auto
-          w-full
-          px-3
-          py-2
-          rounded
-          text-gray-400
-          items-center
-          justify-center
-          hover:bg-gray-900 hover:text-white
-        "
-      >
-        <span>About</span>
-      </a>
-      <a
-        href="#"
-        class="
-          lg:inline-flex lg:w-auto
-          w-full
-          px-3
-          py-2
-          rounded
-          text-gray-400
-          items-center
-          justify-center
-          hover:bg-gray-900 hover:text-white
-        "
-      >
-        <span>Services</span>
-      </a>
-      <a
-        href="#"
-        class="
-          lg:inline-flex lg:w-auto
-          w-full
-          px-3
-          py-2
-          rounded
-          text-gray-400
-          items-center
-          justify-center
-          hover:bg-gray-900 hover:text-white
-        "
-      >
-        <span>Gallery</span>
-      </a>
-      <a
-        href="/product"
+        href="/product/all-products"
         class="
           lg:inline-flex lg:w-auto
           w-full
@@ -189,7 +99,40 @@
         <span>Products</span>
       </a>
       <a
-        href="#"
+        href="/about"
+        class="
+          lg:inline-flex lg:w-auto
+          w-full
+          px-3
+          py-2
+          rounded
+          text-gray-400
+          items-center
+          justify-center
+          hover:bg-gray-900 hover:text-white
+        "
+      >
+        <span>About</span>
+      </a>
+      <a
+        href="/services"
+        class="
+          lg:inline-flex lg:w-auto
+          w-full
+          px-3
+          py-2
+          rounded
+          text-gray-400
+          items-center
+          justify-center
+          hover:bg-gray-900 hover:text-white
+        "
+      >
+        <span>Services</span>
+      </a>
+
+      <a
+        href="/contactus"
         class="
           lg:inline-flex lg:w-auto
           w-full
@@ -207,7 +150,7 @@
 
       <%if (user) { %>
       <a
-        href="#"
+        href="/wishlist"
         class="
           lg:inline-flex lg:w-auto
           w-full
@@ -227,7 +170,7 @@
       </a>
 
       <a
-        href="#"
+        href="/add-to-cart"
         class="
           lg:inline-flex lg:w-auto
           w-full

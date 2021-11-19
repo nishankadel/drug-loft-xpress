@@ -10,10 +10,25 @@ normalRoute.get("/", (req, res) => {
   res.render("index");
 });
 
-normalRoute.get("/product", ensureAuth, (req, res) => {
-  res.send("product page");
+normalRoute.get("/about", ensureAuth, (req, res) => {
+  res.send("about page");
 });
 
+normalRoute.get("/contactus", ensureAuth, (req, res) => {
+  res.send("contact us page");
+});
+
+normalRoute.get("/services", ensureAuth, (req, res) => {
+  res.send("servicess page");
+});
+
+normalRoute.get("/wishlist", ensureAuth, (req, res) => {
+  res.send("wishlist page");
+});
+
+normalRoute.get("/add-to-cart", ensureAuth, (req, res) => {
+  res.send("addtocart page");
+});
 
 // exporting normalRoute
 module.exports = normalRoute;

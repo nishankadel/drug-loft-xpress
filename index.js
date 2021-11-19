@@ -72,6 +72,7 @@ app.use(morgan("tiny"));
 app.use("/", require("./routers/normalRoute"));
 app.use("/auth", require("./routers/authRoute"));
 app.use("/user", require("./routers/userRoute"));
+app.use("/product", require("./routers/productRoute"));
 
 // setting up view engine
 app.set("view engine", "ejs");

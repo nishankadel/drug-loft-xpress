@@ -1,5 +1,5 @@
-<%- include("../partials/header") %> <%- include("../partials/navbar") %> <% if
-(user.service_provider == "local"){%>
+<%- include("../partials/header") %> <%- include("../partials/navbar") %> <%-
+include("../partials/messages") %> <% if (user.service_provider == "local"){%>
 <div class="container mx-auto">
   <div class="flex justify-center px-6 my-12">
     <div class="w-full xl:w-3/4 lg:w-11/12 flex">
@@ -268,4 +268,11 @@
     </div>
   </div>
 </div>
-<%}%> <%- include("../partials/footer") %>
+<%}%> 
+
+
+
+
+
+
+<%- include("../partials/footer") %>
