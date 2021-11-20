@@ -56,6 +56,7 @@ app.use((req, res, next) => {
 app.use(passport.initialize());
 app.use(passport.session());
 require("./middlewares/passportLocal")(passport);
+require("./middlewares/passportLocalAdmin")(passport);
 require("./middlewares/passportGoogle")(passport);
 
 app.use((req, res, next) => {
@@ -73,6 +74,7 @@ app.use("/", require("./routers/normalRoute"));
 app.use("/auth", require("./routers/authRoute"));
 app.use("/user", require("./routers/userRoute"));
 app.use("/product", require("./routers/productRoute"));
+app.use("/admin", require("./routers/adminRoute"));
 
 // setting up view engine
 app.set("view engine", "ejs");

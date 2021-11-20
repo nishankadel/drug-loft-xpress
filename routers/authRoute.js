@@ -71,7 +71,7 @@ authRoute.get("/google/callback", (req, res, next) => {
 // POST ROUTER CODE GOES HERE
 // POST Router for Login Page
 authRoute.post("/login", async (req, res, next) => {
-  passport.authenticate("local", {
+  passport.authenticate("user-local", {
     successRedirect: "/",
     failureRedirect: "/auth/login",
     failureFlash: true,

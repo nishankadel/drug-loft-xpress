@@ -5,7 +5,7 @@ const loginServices = require("../services/loginServices");
 const bcrypt = require("bcryptjs");
 
 module.exports = function (passport) {
-  passport.use( "user-local",
+  passport.use("admin-local",
     new LocalStrategy(
       {
         usernameField: "email",
@@ -18,16 +18,23 @@ module.exports = function (passport) {
             });
           }
           if (user) {
-            bcrypt.compare(password, user.password, (err, isMatch) => {
-              if (err) throw err;
-              if (isMatch) {
-                return done(null, user);
-              } else {
-                return done(null, false, {
-                  message: "Email or Password incorrect.",
-                });
-              }
-            });
+            if (user.user_type == "Admin") {
+              bcrypt.compare(password, user.password, (err, isMatch) => {
+                if (err) throw err;
+                if (isMatch) {
+                  return done(null, user);
+                } else {
+                  return done(null, false, {
+                    message: "Email or Password incorrect.",
+                  });
+                }
+              });
+            }
+            else{
+              return done(null, false, {
+                message: "You are not authorized to access this resources.",
+              });
+            }
           }
         });
       }
