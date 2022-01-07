@@ -154,6 +154,74 @@ adminRoute.get(
   }
 );
 
+// list consultant page
+var consultant_list;
+adminRoute.get(
+  "/all-consultant",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    try {
+      var sql = "select * from blogs";
+      await connection.query(sql, (err, result, fields) => {
+        consultant_list = result;
+      });
+      await res.render("admin/listConsultant", { consultant_list });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// update consultant page
+adminRoute.get(
+  "/add-consultant",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    res.render("admin/addConsultant");
+  }
+);
+
+// update consultant page
+adminRoute.get(
+  "/update-consultant/:id",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const id = req.params.id;
+    try {
+      var sql = "select * from blogs where id =?;";
+      await connection.query(sql, [id], (err, result, fields) => {
+        res.render("admin/updateConsultant", {
+          consultant: result[0],
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// get all feedback
+var feedback_list;
+adminRoute.get(
+  "/all-feedback",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    try {
+      var sql = "select * from feedback";
+      await connection.query(sql, (err, result, fields) => {
+        feedback_list = result;
+      });
+      await res.render("admin/listFeedback", { feedback_list });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 // POST ROUTER CODE GOES HERE
 // POSt Router for admin login
 adminRoute.post("/login", async (req, res, next) => {
@@ -303,6 +371,83 @@ adminRoute.post(
 
             req.flash("success_msg", "User updated uccessfully.");
             res.redirect("/admin/all-user");
+          }
+        );
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// Post Router for admin add consultant
+adminRoute.post(
+  "/add-consultant",
+  upload.single("consultantimage"),
+  async (req, res) => {
+    const { title, content } = req.body;
+    try {
+      const output = await cloudinary.uploader.upload(req.file.path, {
+        folder: "blogs",
+      });
+      var sql = "insert into blogs(title, description, image) values (?,?,?);";
+      await connection.query(
+        sql,
+        [title, content, output.secure_url],
+        (err, result, fields) => {
+          if (err) throw err;
+          req.flash("success_msg", "Consultant added successfuly.");
+          res.redirect("/admin/all-consultant");
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// delete consultant
+adminRoute.post("/delete-consultant/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    var sql = "delete from blogs where id =?;";
+    await connection.query(sql, [id], (err, result, fields) => {
+      if (err) throw err;
+      req.flash("success_msg", "Consultant deleted successfuly.");
+      res.redirect("/admin/all-consultant");
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// update user
+adminRoute.post(
+  "/update-consultant/:id",
+  upload.single("consultantimage"),
+  async (req, res) => {
+    const { id } = req.params;
+    const { title, content } = req.body;
+    try {
+      const output = await cloudinary.uploader.upload(req.file.path, {
+        folder: "blogs",
+      });
+      var sql = "select * from blogs where id = ?;";
+
+      await connection.query(sql, [id], function (err, result, fields) {
+        if (err) throw err;
+
+        var sql =
+          "update blogs set title = ?, description = ?, image = ? where id = ? ;";
+        var u_id = result[0].id;
+        connection.query(
+          sql,
+          [title, content, output.secure_url, u_id],
+          (err, result, fields) => {
+            if (err) throw err;
+
+            req.flash("success_msg", "Consultant updated uccessfully.");
+            res.redirect("/admin/all-consultant");
           }
         );
       });

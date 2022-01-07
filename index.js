@@ -75,6 +75,7 @@ app.use("/auth", require("./routers/authRoute"));
 app.use("/user", require("./routers/userRoute"));
 app.use("/product", require("./routers/productRoute"));
 app.use("/admin", require("./routers/adminRoute"));
+app.use("/blogs", require("./routers/blogRoute"));
 
 // setting up view engine
 app.set("view engine", "ejs");

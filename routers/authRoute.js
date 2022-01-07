@@ -229,21 +229,29 @@ authRoute.post("/forgot-password", async (req, res) => {
       if (err) throw err;
 
       if (result.length > 0) {
-        // send email
+        if (result[0].service_provider == "local") {
+          // send email
+          sendEmail(
+            email_fp,
+            "d-c59530a701a94b9da0b62ed6ff47c3c4",
+            result[0].fullname,
+            random
+          );
+          // send flash message
+          req.flash(
+            "success_msg",
+            "Reset code is sent to your email. Please check your inbox."
+          );
 
-        sendEmail(
-          email_fp,
-          "d-c59530a701a94b9da0b62ed6ff47c3c4",
-          result[0].fullname,
-          random
-        );
-        // send flash message
-        req.flash(
-          "success_msg",
-          "Reset code is sent to your email. Please check your inbox."
-        );
+          res.redirect("/auth/password-verification");
+        } else {
+          req.flash(
+            "error_msg",
+            "You cannot reset password if email is from google."
+          );
 
-        res.redirect("/auth/password-verification");
+          res.redirect("/auth/login");
+        }
       } else {
         req.flash("error_msg", "This email is not registered.");
 

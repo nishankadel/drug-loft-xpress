@@ -1,144 +1,505 @@
 <%- include("./partials/header") %> <%- include("./partials/navbar") %> <%-
 include ('./partials/messages') %>
-<!-- for single blog -->
 <style>
-  .pt-\[17\%\] {
-    padding-top: 17%;
+  body,
+  #slider,
+  .wrap,
+  .slide-content {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+    height: 75vh;
+    overflow-x: hidden;
   }
-  .mt-\[-10\%\] {
-    margin-top: -10%;
+
+  .wrap {
+    position: relative;
   }
-  .pt-\[56\.25\%\] {
-    padding-top: 56.25%;
+
+  .slide {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .slide1 {
+    background-image: url("../images/chat-with-expert.jpg");
+  }
+  .slide2 {
+    background-image: url("../images/medicine.jpg");
+  }
+  .slide3 {
+    background-image: url("../images/home-delivery.png");
+  }
+
+  .slide-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .slide-content span {
+    font-size: 2rem;
+    color: rgb(56, 56, 56);
+    padding-top: 400px;
+  }
+
+  .arrow {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    margin-top: -35px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+  }
+
+  #arrow-left {
+    border-width: 30px 40px 30px 0;
+    border-color: transparent rgb(88, 88, 88) transparent transparent;
+    left: 0;
+    margin-left: 30px;
+  }
+
+  #arrow-right {
+    border-width: 30px 0 30px 40px;
+    border-color: transparent transparent transparent rgb(88, 88, 88);
+    right: 0;
+    margin-right: 30px;
   }
 </style>
 
-<main class="relative container mx-auto bg-white px-4">
-  <div class="relative -mx-4 top-0 pt-[17%] overflow-hidden">
-    <img
-      class="absolute inset-0 object-cover object-top w-full h-full filter blur"
-      src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8Y29uY2VydCUyMHBvc3RlcnxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
-      alt=""
-    />
-  </div>
-
-  <div class="mt-[-10%] w-1/2 mx-auto">
-    <div class="relative pt-[56.25%] overflow-hidden rounded-2xl">
-      <img
-        class="w-full h-full absolute inset-0 object-cover"
-        src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8Y29uY2VydCUyMHBvc3RlcnxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
-        alt=""
-      />
+<!-- carousel  -->
+<div class="wrap">
+  <div id="arrow-left" class="arrow"></div>
+  <div id="slider">
+    <div class="slide slide1">
+      <div class="slide-content">
+        <span>"Chat With Expert"</span>
+      </div>
+    </div>
+    <div class="slide slide2">
+      <div class="slide-content">
+        <span>"Buy Medicine Online"</span>
+      </div>
+    </div>
+    <div class="slide slide3">
+      <div class="slide-content">
+        <span>"Home Delivery In Time"</span>
+      </div>
     </div>
   </div>
+  <div id="arrow-right" class="arrow"></div>
+</div>
+<!-- carousel  -->
 
-  <article class="max-w-prose mx-auto py-8">
-    <h1 class="text-2xl font-bold">
-      Music Event Party, Awards 2021. Exclusive after party only for special
-      guests.
-    </h1>
-    <h2 class="mt-2 text-sm text-gray-500">Admin, 28 November 2021</h2>
-
-    <p class="mt-6">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ornare justo
-      felis, nec lobortis augue luctus et. Sed nibh metus, posuere non elit nec,
-      rutrum imperdiet justo. Cras ut nunc felis. Nunc rhoncus faucibus
-      ultrices. Suspendisse ut consectetur nulla. Pellentesque mattis, ligula at
-      pellentesque tempor, nisl elit porta lectus, eu bibendum arcu purus eget
-      urna. Phasellus euismod at elit vel convallis. Nullam porttitor mauris
-      risus, eget hendrerit nisl tincidunt vel. Phasellus at dolor dui. Aliquam
-      commodo tellus dolor. Sed purus nunc, laoreet quis elementum at, elementum
-      at nisl. Praesent ut rhoncus orci. Curabitur sit amet est non dolor
-      porttitor facilisis. Nullam velit tortor, iaculis eget vehicula quis,
-      sollicitudin id magna.
-    </p>
-    <p class="mt-4">
-      Praesent ornare interdum gravida. Donec efficitur leo suscipit aliquet
-      pellentesque. In quis purus et dui mollis vulputate. Aenean non faucibus
-      felis. Phasellus non aliquet est, non dictum sem. In hac habitasse platea
-      dictumst. Integer vehicula elit ac libero egestas ornare non sed dolor.
-      Integer vulputate id est nec pulvinar. Cras nec sollicitudin lacus, quis
-      sagittis diam. Donec porta libero ac lorem semper, eget porttitor quam
-      fermentum. Ut tincidunt feugiat sem, nec aliquam mi tincidunt non.
-    </p>
-    <p class="mt-4">
-      Etiam accumsan leo sem, sit amet faucibus ex convallis fermentum. Nunc
-      tristique, eros eget rutrum accumsan, dolor quam varius nisl, ut euismod
-      arcu urna a lectus. Mauris at dapibus metus. Vestibulum ipsum lorem,
-      dictum vitae sapien eget, rutrum rhoncus sapien. Vivamus a nisi ut risus
-      porta ultricies. Etiam mollis massa odio, non eleifend leo ullamcorper in.
-      Sed ultricies, magna id fermentum volutpat, lorem orci placerat mauris, et
-      molestie ipsum mauris sed sapien. Aliquam nulla lorem, pretium ut interdum
-      dapibus, suscipit at metus. Proin consequat euismod consequat. Aenean
-      placerat turpis et pretium condimentum. Nunc hendrerit tellus semper
-      suscipit dignissim. Nullam fringilla, sem nec volutpat tincidunt, ex eros
-      congue diam, quis venenatis mauris urna et dolor. Vivamus aliquam euismod
-      eros vel pulvinar. Cras arcu augue, rutrum nec velit sit amet, aliquet
-      lobortis leo. Donec placerat, libero in blandit mattis, turpis nisl varius
-      urna, ac pellentesque dui nisi sit amet dui.
-    </p>
-    <p class="mt-4">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vel sapien
-      nisi. Sed molestie quis odio ut facilisis. Duis porttitor turpis at
-      sollicitudin ornare. Aenean vitae nulla justo. In egestas consequat sem,
-      dapibus gravida velit. Nullam dictum, ligula vel porttitor vestibulum, est
-      enim lobortis erat, eget rutrum nunc ex at mauris. Nunc nec laoreet ipsum.
-      Sed vel est a eros sagittis vulputate. Proin cursus ut mauris vel commodo.
-      Sed non sapien metus.
-    </p>
-    <p class="mt-4">
-      Nunc aliquet maximus ante, quis malesuada orci sagittis vel. Nunc non
-      porta purus, ultricies rhoncus nulla. Aenean laoreet tortor nec risus
-      fringilla posuere. Quisque eu lacinia dolor, in luctus leo. Aenean non
-      turpis ac ipsum fermentum faucibus. Pellentesque fringilla ante a ex
-      mollis, non scelerisque orci tempor. Sed non dapibus dolor, ac euismod
-      turpis. Integer eu quam nibh. Ut suscipit lacinia sollicitudin.
-      Pellentesque habitant morbi tristique senectus et netus et malesuada fames
-      ac turpis egestas. Maecenas rutrum vestibulum mauris, sed mattis tellus
-      maximus in. Nullam imperdiet enim nec nisi euismod, ut accumsan odio
-      gravida. Nunc eu augue a dui porta fringilla sed at ex. Cras pellentesque
-      suscipit porttitor. Nunc non ullamcorper nibh. Praesent purus libero,
-      congue non laoreet sed, dapibus vel turpis.
-    </p>
-  </article>
-</main>
-<!-- for single blog -->
-
-<!-- for blog list  -->
-<section class="py-4">
-  <div class="container mx-auto">
-    <div>
-      <h1 class="text-2xl font-black text-gray-900 px-6 md:px-12">MY BLOG</h1>
+<!-- new Products  -->
+<section class="text-gray-600">
+  <div class="container px-3 py-3 mx-auto">
+    <div class="flex flex-wrap w-full mb-8">
+      <div class="w-full mb-6 lg:mb-0">
+        <h1
+          class="
+            sm:text-4xl
+            text-5xl
+            font-bold font-medium
+            title-font
+            mb-2
+            text-gray-900
+          "
+        >
+          New Medicines
+        </h1>
+        <div class="h-1 w-20 bg-indigo-500 rounded"></div>
+      </div>
     </div>
-    <div class="flex flex-wrap px-6">
-      <!-- copy herte  -->
-      <div class="w-full lg:w-1/2 md:px-4 lg:px-6 py-5 bg-gray-100">
-        <div class="bg-white hover:shadow-xl">
-          <div class="">
-            <img
-              src="https://images.pexels.com/photos/952670/pexels-photo-952670.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-              alt="blog-pic"
-              class="h-56 w-full border-white border-8"
-            />
-          </div>
-          <div class="px-4 py-4 md:px-10">
-            <h1 class="font-bold text-lg"><a href=""> UI,UX Concepts</a></h1>
-
-            <div class="flex flex-wrap pt-8">
-              <div class="w-full md:w-1/3 text-sm font-medium">
-                NOVEMBER 1,2019
-              </div>
-            </div>
-            <div class="flex flex-wrap pt-1">
-              <div class="w-full md:w-1/3 text-sm font-medium">By Admin</div>
-            </div>
-          </div>
+    <div class="flex flex-wrap -m-4">
+      <div class="lg:w-1/4 p-4 w-1/2">
+        <a href="" class="block relative h-48 rounded overflow-hidden">
+          <img
+            alt="ecommerce"
+            class="object-cover object-center w-full h-full block"
+            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
+          />
+        </a>
+        <div class="mt-4">
+          <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">
+            CATEGORY
+          </h3>
+          <h2 class="text-gray-900 title-font text-lg font-medium">
+            Shooting Stars
+          </h2>
+          <p class="mt-1">$21.15</p>
+          <button
+            class="
+              p-2
+              pl-3
+              pr-3
+              bg-transparent
+              border-2 border-indigo-500
+              text-indigo-500 text-sm
+              rounded-lg
+              hover:bg-indigo-500 hover:text-gray-100
+              focus:border-4 focus:border-indigo-300
+            "
+          >
+            Add To Cart
+          </button>
         </div>
       </div>
+      <div class="lg:w-1/4 p-4 w-1/2">
+        <a class="block relative h-48 rounded overflow-hidden">
+          <img
+            alt="ecommerce"
+            class="object-cover object-center w-full h-full block"
+            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
+          />
+        </a>
+        <div class="mt-4">
+          <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">
+            CATEGORY
+          </h3>
+          <h2 class="text-gray-900 title-font text-lg font-medium">
+            Shooting Stars
+          </h2>
+          <p class="mt-1">$21.15</p>
+          <button
+            class="
+              p-2
+              pl-3
+              pr-3
+              bg-transparent
+              border-2 border-indigo-500
+              text-indigo-500 text-sm
+              rounded-lg
+              hover:bg-indigo-500 hover:text-gray-100
+              focus:border-4 focus:border-indigo-300
+            "
+          >
+            Add To Cart
+          </button>
+        </div>
+      </div>
+      <div class="lg:w-1/4 p-4 w-1/2">
+        <a class="block relative h-48 rounded overflow-hidden">
+          <img
+            alt="ecommerce"
+            class="object-cover object-center w-full h-full block"
+            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
+          />
+        </a>
+        <div class="mt-4">
+          <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">
+            CATEGORY
+          </h3>
+          <h2 class="text-gray-900 title-font text-lg font-medium">
+            Shooting Stars
+          </h2>
+          <p class="mt-1">$21.15</p>
+          <button
+            class="
+              p-2
+              pl-3
+              pr-3
+              bg-transparent
+              border-2 border-indigo-500
+              text-indigo-500 text-sm
+              rounded-lg
+              hover:bg-indigo-500 hover:text-gray-100
+              focus:border-4 focus:border-indigo-300
+            "
+          >
+            Add To Cart
+          </button>
+        </div>
+      </div>
+      <div class="lg:w-1/4 p-4 w-1/2">
+        <a class="block relative h-48 rounded overflow-hidden">
+          <img
+            alt="ecommerce"
+            class="object-cover object-center w-full h-full block"
+            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
+          />
+        </a>
+        <div class="mt-4">
+          <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">
+            CATEGORY
+          </h3>
+          <h2 class="text-gray-900 title-font text-lg font-medium">
+            Shooting Stars
+          </h2>
+          <p class="mt-1">$21.15</p>
+          <button
+            class="
+              p-2
+              pl-3
+              pr-3
+              bg-transparent
+              border-2 border-indigo-500
+              text-indigo-500 text-sm
+              rounded-lg
+              hover:bg-indigo-500 hover:text-gray-100
+              focus:border-4 focus:border-indigo-300
+            "
+          >
+            Add To Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      <!-- copy herte  -->
+  <div class="flex flex-col">
+    <div class="flex flex-row-reverse flex-wrap m-auto">
+      <a
+        href=""
+        class="
+          p-2
+          pl-5
+          pr-5
+          mt-3
+          bg-transparent
+          border-2 border-green-500
+          text-green-500 text-lg
+          rounded-lg
+          hover:bg-green-500 hover:text-gray-100
+          focus:border-4 focus:border-green-300
+        "
+      >
+        See More
+      </a>
     </div>
   </div>
 </section>
-<!-- for blog list  -->
+<!-- new products  -->
+
+<!-- feature brands  -->
+<section class="text-gray-600">
+  <div class="container px-3 py-10 mx-auto">
+    <div class="flex flex-wrap w-full mb-8">
+      <div class="w-full mb-6 lg:mb-0">
+        <h1
+          class="
+            sm:text-4xl
+            text-5xl
+            font-bold font-medium
+            title-font
+            mb-2
+            text-gray-900
+          "
+        >
+          Feature Brands
+        </h1>
+        <div class="h-1 w-20 bg-indigo-500 rounded"></div>
+      </div>
+    </div>
+    <div class="flex flex-wrap -m-4">
+      <div class="lg:w-1/4 p-4 w-1/2">
+        <a class="block relative h-48 rounded overflow-hidden">
+          <img
+            alt="ecommerce"
+            class="object-cover object-center w-full h-full block"
+            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
+          />
+        </a>
+      </div>
+      <div class="lg:w-1/4 p-4 w-1/2">
+        <a class="block relative h-48 rounded overflow-hidden">
+          <img
+            alt="ecommerce"
+            class="object-cover object-center w-full h-full block"
+            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
+          />
+        </a>
+      </div>
+      <div class="lg:w-1/4 p-4 w-1/2">
+        <a class="block relative h-48 rounded overflow-hidden">
+          <img
+            alt="ecommerce"
+            class="object-cover object-center w-full h-full block"
+            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
+          />
+        </a>
+      </div>
+      <div class="lg:w-1/4 p-4 w-1/2">
+        <a class="block relative h-48 rounded overflow-hidden">
+          <img
+            alt="ecommerce"
+            class="object-cover object-center w-full h-full block"
+            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
+          />
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- feature brands  -->
+
+<!-- articles  -->
+<section class="text-gray-600">
+  <div class="container px-3 py-3 mx-auto">
+    <div class="flex flex-wrap w-full mb-8">
+      <div class="w-full mb-6 lg:mb-0">
+        <h1
+          class="
+            sm:text-4xl
+            text-5xl
+            font-bold font-medium
+            title-font
+            mb-2
+            text-gray-900
+          "
+        >
+          New Articles
+        </h1>
+        <div class="h-1 w-20 bg-indigo-500 rounded"></div>
+      </div>
+    </div>
+    <div class="flex flex-wrap -m-4">
+      <div class="lg:w-1/4 p-4 w-1/2">
+        <a href="" class="block relative h-48 rounded overflow-hidden">
+          <img
+            alt="ecommerce"
+            class="object-cover object-center w-full h-full block"
+            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
+          />
+        </a>
+        <div class="mt-4">
+          <h3 class="text-gray-900 title-font text-lg font-medium">title</h3>
+          <p class="mt-1">Date</p>
+          <h2 class="text-gray-500 text-xs tracking-widest title-font mb-1">
+            By Admin
+          </h2>
+        </div>
+      </div>
+      <div class="lg:w-1/4 p-4 w-1/2">
+        <a href="" class="block relative h-48 rounded overflow-hidden">
+          <img
+            alt="ecommerce"
+            class="object-cover object-center w-full h-full block"
+            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
+          />
+        </a>
+        <div class="mt-4">
+          <h3 class="text-gray-900 title-font text-lg font-medium">title</h3>
+          <p class="mt-1">Date</p>
+          <h2 class="text-gray-500 text-xs tracking-widest title-font mb-1">
+            By Admin
+          </h2>
+        </div>
+      </div>
+      <div class="lg:w-1/4 p-4 w-1/2">
+        <a href="" class="block relative h-48 rounded overflow-hidden">
+          <img
+            alt="ecommerce"
+            class="object-cover object-center w-full h-full block"
+            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
+          />
+        </a>
+        <div class="mt-4">
+          <h3 class="text-gray-900 title-font text-lg font-medium">title</h3>
+          <p class="mt-1">Date</p>
+          <h2 class="text-gray-500 text-xs tracking-widest title-font mb-1">
+            By Admin
+          </h2>
+        </div>
+      </div>
+      <div class="lg:w-1/4 p-4 w-1/2">
+        <a href="" class="block relative h-48 rounded overflow-hidden">
+          <img
+            alt="ecommerce"
+            class="object-cover object-center w-full h-full block"
+            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
+          />
+        </a>
+        <div class="mt-4">
+          <h3 class="text-gray-900 title-font text-lg font-medium">title</h3>
+          <p class="mt-1">Date</p>
+          <h2 class="text-gray-500 text-xs tracking-widest title-font mb-1">
+            By Admin
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col">
+    <div class="flex flex-row-reverse flex-wrap m-auto">
+      <a
+        href=""
+        class="
+          p-2
+          pl-5
+          pr-5
+          mt-3
+          bg-transparent
+          border-2 border-green-500
+          text-green-500 text-lg
+          rounded-lg
+          hover:bg-green-500 hover:text-gray-100
+          focus:border-4 focus:border-green-300
+        "
+      >
+        See More
+      </a>
+    </div>
+  </div>
+</section>
+<!-- articles  -->
+
+<%- include("./partials/footNav") %>
+
+<script>
+  let sliderImages = document.querySelectorAll(".slide"),
+    arrowLeft = document.querySelector("#arrow-left"),
+    arrowRight = document.querySelector("#arrow-right"),
+    current = 0;
+
+  // Clear all images
+  function reset() {
+    for (let i = 0; i < sliderImages.length; i++) {
+      sliderImages[i].style.display = "none";
+    }
+  }
+
+  // Init slider
+  function startSlide() {
+    reset();
+    sliderImages[0].style.display = "block";
+  }
+
+  // Show prev
+  function slideLeft() {
+    reset();
+    sliderImages[current - 1].style.display = "block";
+    current--;
+  }
+
+  // Show next
+  function slideRight() {
+    reset();
+    sliderImages[current + 1].style.display = "block";
+    current++;
+  }
+
+  // Left arrow click
+  arrowLeft.addEventListener("click", function () {
+    if (current === 0) {
+      current = sliderImages.length;
+    }
+    slideLeft();
+  });
+
+  // Right arrow click
+  arrowRight.addEventListener("click", function () {
+    if (current === sliderImages.length - 1) {
+      current = -1;
+    }
+    slideRight();
+  });
+
+  startSlide();
+</script>
 <%- include("./partials/footer") %>
