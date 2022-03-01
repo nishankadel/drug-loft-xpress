@@ -1,5 +1,5 @@
-<%- include("./partials/header") %> <%- include("./partials/navbar") %> <%-
-include ('./partials/messages') %>
+<%- include("./partials/header") %> <%- include('./partials/topNav') %> <%-
+include("./partials/navbar") %> <%- include ('./partials/messages') %>
 <style>
   body,
   #slider,
@@ -102,172 +102,75 @@ include ('./partials/messages') %>
     <div class="flex flex-wrap w-full mb-8">
       <div class="w-full mb-6 lg:mb-0">
         <h1
-          class="
-            sm:text-4xl
-            text-5xl
-            font-bold font-medium
-            title-font
-            mb-2
-            text-gray-900
-          "
+          class="sm:text-4xl text-5xl font-bold font-medium title-font mb-2 text-gray-900"
         >
           New Medicines
         </h1>
         <div class="h-1 w-20 bg-indigo-500 rounded"></div>
       </div>
     </div>
+
     <div class="flex flex-wrap -m-4">
+      <%if (new_medicines){ %> <% new_medicines.forEach(function(eachproduct){
+      %>
       <div class="lg:w-1/4 p-4 w-1/2">
-        <a href="" class="block relative h-48 rounded overflow-hidden">
+        <a
+          href="/product/single-product/<%=eachproduct.id%>"
+          class="block relative h-48 rounded overflow-hidden"
+        >
           <img
             alt="ecommerce"
             class="object-cover object-center w-full h-full block"
-            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
+            src="<%= eachproduct.image%>"
           />
         </a>
         <div class="mt-4">
           <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">
-            CATEGORY
+            <%= eachproduct.category%>
           </h3>
           <h2 class="text-gray-900 title-font text-lg font-medium">
-            Shooting Stars
+            <%= eachproduct.name%>
           </h2>
-          <p class="mt-1">$21.15</p>
-          <button
-            class="
-              p-2
-              pl-3
-              pr-3
-              bg-transparent
-              border-2 border-indigo-500
-              text-indigo-500 text-sm
-              rounded-lg
-              hover:bg-indigo-500 hover:text-gray-100
-              focus:border-4 focus:border-indigo-300
-            "
-          >
-            Add To Cart
-          </button>
+          <p class="mt-1">Rs <%= eachproduct.price%> /-</p>
+          <form action="/product/add-to-cart" method="post">
+            <input
+              type="text"
+              value=" <%= eachproduct.id%>"
+              name="product_id"
+              hidden
+            />
+            <button
+              type="submit"
+              class="p-2 pl-3 mt-2 pr-3 bg-transparent border-2 border-indigo-500 text-indigo-500 text-sm rounded-lg hover:bg-indigo-500 hover:text-gray-100 focus:border-4 focus:border-indigo-300"
+            >
+              Add To Cart
+            </button>
+          </form>
+          <form action="/product/add-favourite" method="post">
+            <input
+              type="text"
+              value=" <%= eachproduct.id%>"
+              name="product_id"
+              hidden
+            />
+            <button
+              type="submit"
+              class="p-2 mt-5 pl-3 pr-3 bg-transparent border-2 border-red-500 text-red-500 text-sm rounded-lg hover:bg-red-500 hover:text-gray-100 focus:border-4 focus:border-red-300"
+            >
+              Favourite <i class="fa-solid fa-heart"></i>
+            </button>
+          </form>
         </div>
       </div>
-      <div class="lg:w-1/4 p-4 w-1/2">
-        <a class="block relative h-48 rounded overflow-hidden">
-          <img
-            alt="ecommerce"
-            class="object-cover object-center w-full h-full block"
-            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
-          />
-        </a>
-        <div class="mt-4">
-          <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">
-            CATEGORY
-          </h3>
-          <h2 class="text-gray-900 title-font text-lg font-medium">
-            Shooting Stars
-          </h2>
-          <p class="mt-1">$21.15</p>
-          <button
-            class="
-              p-2
-              pl-3
-              pr-3
-              bg-transparent
-              border-2 border-indigo-500
-              text-indigo-500 text-sm
-              rounded-lg
-              hover:bg-indigo-500 hover:text-gray-100
-              focus:border-4 focus:border-indigo-300
-            "
-          >
-            Add To Cart
-          </button>
-        </div>
-      </div>
-      <div class="lg:w-1/4 p-4 w-1/2">
-        <a class="block relative h-48 rounded overflow-hidden">
-          <img
-            alt="ecommerce"
-            class="object-cover object-center w-full h-full block"
-            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
-          />
-        </a>
-        <div class="mt-4">
-          <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">
-            CATEGORY
-          </h3>
-          <h2 class="text-gray-900 title-font text-lg font-medium">
-            Shooting Stars
-          </h2>
-          <p class="mt-1">$21.15</p>
-          <button
-            class="
-              p-2
-              pl-3
-              pr-3
-              bg-transparent
-              border-2 border-indigo-500
-              text-indigo-500 text-sm
-              rounded-lg
-              hover:bg-indigo-500 hover:text-gray-100
-              focus:border-4 focus:border-indigo-300
-            "
-          >
-            Add To Cart
-          </button>
-        </div>
-      </div>
-      <div class="lg:w-1/4 p-4 w-1/2">
-        <a class="block relative h-48 rounded overflow-hidden">
-          <img
-            alt="ecommerce"
-            class="object-cover object-center w-full h-full block"
-            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
-          />
-        </a>
-        <div class="mt-4">
-          <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">
-            CATEGORY
-          </h3>
-          <h2 class="text-gray-900 title-font text-lg font-medium">
-            Shooting Stars
-          </h2>
-          <p class="mt-1">$21.15</p>
-          <button
-            class="
-              p-2
-              pl-3
-              pr-3
-              bg-transparent
-              border-2 border-indigo-500
-              text-indigo-500 text-sm
-              rounded-lg
-              hover:bg-indigo-500 hover:text-gray-100
-              focus:border-4 focus:border-indigo-300
-            "
-          >
-            Add To Cart
-          </button>
-        </div>
-      </div>
+      <% }); %> <% } %>
     </div>
   </div>
 
   <div class="flex flex-col">
     <div class="flex flex-row-reverse flex-wrap m-auto">
       <a
-        href=""
-        class="
-          p-2
-          pl-5
-          pr-5
-          mt-3
-          bg-transparent
-          border-2 border-green-500
-          text-green-500 text-lg
-          rounded-lg
-          hover:bg-green-500 hover:text-gray-100
-          focus:border-4 focus:border-green-300
-        "
+        href="/product/all-products"
+        class="p-2 pl-5 pr-5 mt-3 bg-transparent border-2 border-green-500 text-green-500 text-lg rounded-lg hover:bg-green-500 hover:text-gray-100 focus:border-4 focus:border-green-300"
       >
         See More
       </a>
@@ -282,14 +185,7 @@ include ('./partials/messages') %>
     <div class="flex flex-wrap w-full mb-8">
       <div class="w-full mb-6 lg:mb-0">
         <h1
-          class="
-            sm:text-4xl
-            text-5xl
-            font-bold font-medium
-            title-font
-            mb-2
-            text-gray-900
-          "
+          class="sm:text-4xl text-5xl font-bold font-medium title-font mb-2 text-gray-900"
         >
           Feature Brands
         </h1>
@@ -344,14 +240,7 @@ include ('./partials/messages') %>
     <div class="flex flex-wrap w-full mb-8">
       <div class="w-full mb-6 lg:mb-0">
         <h1
-          class="
-            sm:text-4xl
-            text-5xl
-            font-bold font-medium
-            title-font
-            mb-2
-            text-gray-900
-          "
+          class="sm:text-4xl text-5xl font-bold font-medium title-font mb-2 text-gray-900"
         >
           New Articles
         </h1>
@@ -359,7 +248,27 @@ include ('./partials/messages') %>
       </div>
     </div>
     <div class="flex flex-wrap -m-4">
+      <%if (new_articles){ %> <% new_medicines.forEach(function(eachproduct){ %>
       <div class="lg:w-1/4 p-4 w-1/2">
+        <a href="" class="block relative h-48 rounded overflow-hidden">
+          <img
+            alt="ecommerce"
+            class="object-cover object-center w-full h-full block"
+            src="<%= eachproduct.image%>"
+          />
+        </a>
+        <div class="mt-4">
+          <h3 class="text-gray-900 title-font text-lg font-medium">
+            <%= eachproduct.title%>
+          </h3>
+          <p class="mt-1"><%= eachproduct.createdAt%></p>
+          <h2 class="text-gray-500 text-xs tracking-widest title-font mb-1">
+            By Admin
+          </h2>
+        </div>
+      </div>
+      <% }); %> <% } %>
+      <!-- <div class="lg:w-1/4 p-4 w-1/2">
         <a href="" class="block relative h-48 rounded overflow-hidden">
           <img
             alt="ecommerce"
@@ -406,41 +315,14 @@ include ('./partials/messages') %>
             By Admin
           </h2>
         </div>
-      </div>
-      <div class="lg:w-1/4 p-4 w-1/2">
-        <a href="" class="block relative h-48 rounded overflow-hidden">
-          <img
-            alt="ecommerce"
-            class="object-cover object-center w-full h-full block"
-            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
-          />
-        </a>
-        <div class="mt-4">
-          <h3 class="text-gray-900 title-font text-lg font-medium">title</h3>
-          <p class="mt-1">Date</p>
-          <h2 class="text-gray-500 text-xs tracking-widest title-font mb-1">
-            By Admin
-          </h2>
-        </div>
-      </div>
+      </div> -->
     </div>
   </div>
   <div class="flex flex-col">
     <div class="flex flex-row-reverse flex-wrap m-auto">
       <a
-        href=""
-        class="
-          p-2
-          pl-5
-          pr-5
-          mt-3
-          bg-transparent
-          border-2 border-green-500
-          text-green-500 text-lg
-          rounded-lg
-          hover:bg-green-500 hover:text-gray-100
-          focus:border-4 focus:border-green-300
-        "
+        href="/blogs"
+        class="p-2 pl-5 pr-5 mt-3 bg-transparent border-2 border-green-500 text-green-500 text-lg rounded-lg hover:bg-green-500 hover:text-gray-100 focus:border-4 focus:border-green-300"
       >
         See More
       </a>

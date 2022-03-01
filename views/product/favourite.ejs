@@ -1,0 +1,91 @@
+<%- include("../partials/header") %> <%- include("../partials/navbar") %> <%-
+include ('../partials/messages') %> <%if (total_fav_items.length>0){ %>
+<div class="flex justify-center my-6">
+  <div
+    class="flex flex-col w-full p-8 text-gray-800 bg-white shadow-lg pin-r pin-y md:w-4/5 lg:w-4/5"
+  >
+    <div class="flex-1">
+      <table class="w-full text-sm lg:text-base" cellspacing="0">
+        <thead>
+          <tr class="h-12 uppercase">
+            <th class="hidden md:table-cell"></th>
+            <th class="text-left">Products</th>
+            <th class="text-right">Total price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% total_fav_items.forEach(function(fav_list){ %>
+          <tr>
+            <td class="hidden pb-4 md:table-cell">
+              <a href="/product/single-product/<%= fav_list.id%>">
+                <img
+                  src=" <%= fav_list.image%>"
+                  class="w-20 rounded"
+                  alt="Thumbnail"
+                />
+              </a>
+            </td>
+            <td>
+              <a href="/product/single-product/<%= fav_list.id%>">
+                <p class="mb-2 md:ml-4"><%= fav_list.name%></p></a
+              >
+              <form
+                action="/product/delete-favourite/<%= fav_list.fav_id%>"
+                method="POST"
+              >
+                <button
+                  type="submit"
+                  class="text-gray-700 md:ml-4 hover:text-red-700"
+                >
+                  <small><i class="fa-solid fa-trash-can text-2xl"></i></small>
+                </button>
+              </form>
+            </td>
+
+            <td class="text-right">
+              <form action="/product/add-to-cart" method="post">
+                <input
+                  type="text"
+                  value=" <%= fav_list.id%>"
+                  name="product_id"
+                  hidden
+                />
+                <button
+                  type="submit"
+                  class="p-2 pl-3 mt-2 pr-3 bg-transparent border-2 border-indigo-500 text-indigo-500 text-sm rounded-lg hover:bg-indigo-500 hover:text-gray-100 focus:border-4 focus:border-indigo-300"
+                >
+                  Add To Cart
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<% }%> <%if (total_fav_items.length == 0){ %>
+
+<!-- component -->
+<div class="mt-20 h-screen">
+  <div class="bg-white p-6 md:mx-auto">
+    <div class="text-center">
+      <h3 class="md:text-2xl text-base text-gray-900 font-semibold text-center">
+        Nothing is on cart!
+      </h3>
+      <p class="text-gray-600 my-2">Add to cart first.</p>
+      <div class="py-10 text-center">
+        <a
+          href="/product/all-products"
+          class="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3"
+        >
+          Explore Products
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%}%> <%- include("../partials/footNav") %> <%- include("../partials/footer") %>

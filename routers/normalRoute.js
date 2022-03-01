@@ -8,8 +8,27 @@ const { sendEmail } = require("../middlewares/sendEmail");
 const normalRoute = express.Router();
 
 // routing
-normalRoute.get("/", (req, res) => {
-  res.render("index");
+var new_medicines;
+var new_articles;
+normalRoute.get("/", async (req, res) => {
+  try {
+    var sql = "select * from products order by id limit 4;";
+    await connection.query(sql, (err, result, fields) => {
+      if (err) throw err;
+
+      // new article
+      var sql = "select * from blogs order by id limit 4;";
+      connection.query(sql, (err, result, fields) => {
+        new_articles = result;
+      });
+      res.render("index", {
+        new_medicines: result,
+        new_articles: result,
+      });
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 normalRoute.get("/about", (req, res) => {
@@ -44,13 +63,6 @@ normalRoute.post("/contact", async (req, res) => {
   }
 });
 
-normalRoute.get("/wishlist", ensureAuth, (req, res) => {
-  res.send("wishlist page");
-});
-
-normalRoute.get("/add-to-cart", ensureAuth, (req, res) => {
-  res.send("addtocart page");
-});
 
 // exporting normalRoute
 module.exports = normalRoute;

@@ -22,162 +22,47 @@
 </nav>
 <a
   href="/admin/add-product"
-  class="
-    ml-10
-    mt-3
-    text-md
-    font-bold
-    text-white
-    bg-green-700
-    rounded-full
-    px-5
-    py-2
-    hover:bg-green-800
-  "
+  class="ml-10 mt-3 text-md font-bold text-white bg-green-700 rounded-full px-5 py-2 hover:bg-green-800"
   ><i class="fas fa-plus-circle"></i> Add Products</a
 >
 <div class="container mx-auto px-6 py-3">
   <div class="flex flex-col">
     <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div
-        class="
-          align-middle
-          inline-block
-          min-w-full
-          shadow
-          overflow-hidden
-          sm:rounded-lg
-          border-b border-gray-200
-        "
+        class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200"
       >
         <table class="min-w-full">
           <thead>
             <tr>
               <th
-                class="
-                  px-6
-                  py-3
-                  border-b border-gray-200
-                  bg-gray-50
-                  text-left text-xs
-                  leading-4
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
+                class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"
               >
                 Id
               </th>
               <th
-                class="
-                  px-6
-                  py-3
-                  border-b border-gray-200
-                  bg-gray-50
-                  text-left text-xs
-                  leading-4
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
+                class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"
               >
                 Name
               </th>
               <th
-                class="
-                  px-6
-                  py-3
-                  border-b border-gray-200
-                  bg-gray-50
-                  text-left text-xs
-                  leading-4
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
+                class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"
               >
                 Category
               </th>
+
               <th
-                class="
-                  px-6
-                  py-3
-                  border-b border-gray-200
-                  bg-gray-50
-                  text-left text-xs
-                  leading-4
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
-              >
-                Description
-              </th>
-              <th
-                class="
-                  px-6
-                  py-3
-                  border-b border-gray-200
-                  bg-gray-50
-                  text-left text-xs
-                  leading-4
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
+                class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"
               >
                 Price
               </th>
+
               <th
-                class="
-                  px-6
-                  py-3
-                  border-b border-gray-200
-                  bg-gray-50
-                  text-left text-xs
-                  leading-4
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
-              >
-                Created At
-              </th>
-              <th
-                class="
-                  px-6
-                  py-3
-                  border-b border-gray-200
-                  bg-gray-50
-                  text-left text-xs
-                  leading-4
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
+                class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"
               >
                 brand
               </th>
               <th
-                class="
-                  px-6
-                  py-3
-                  border-b border-gray-200
-                  bg-gray-50
-                  text-left text-xs
-                  leading-4
-                  font-medium
-                  text-gray-500
-                  uppercase
-                  tracking-wider
-                "
+                class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"
               >
                 Action
               </th>
@@ -189,15 +74,7 @@
             %>
             <tr>
               <td
-                class="
-                  px-6
-                  py-4
-                  whitespace-no-wrap
-                  border-b border-gray-200
-                  text-sm
-                  leading-5
-                  text-gray-500
-                "
+                class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500"
               >
                 <%= product.id %>
               </td>
@@ -225,77 +102,20 @@
                 </div>
               </td>
 
-              <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                <span
-                  class="
-                    px-2
-                    inline-flex
-                    text-xs
-                    leading-5
-                    font-semibold
-                    text-gray-500
-                  "
-                  style="
-                    height: 30%;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    word-wrap: break-word;
-                    width: 200px;
-                  "
-                >
-                  <%= product.description %></span
-                >
-              </td>
-
               <td
-                class="
-                  px-6
-                  py-4
-                  whitespace-no-wrap
-                  border-b border-gray-200
-                  text-sm
-                  leading-5
-                  text-gray-500
-                "
+                class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500"
               >
                 <%= product.price %>
               </td>
+
               <td
-                class="
-                  px-6
-                  py-4
-                  whitespace-no-wrap
-                  border-b border-gray-200
-                  text-sm
-                  leading-5
-                  text-gray-500
-                "
-              >
-                <%= product.createdAt %>
-              </td>
-              <td
-                class="
-                  px-6
-                  py-4
-                  whitespace-no-wrap
-                  border-b border-gray-200
-                  text-sm
-                  leading-5
-                  text-gray-500
-                "
+                class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500"
               >
                 <%= product.brand %>
               </td>
+
               <td
-                class="
-                  px-6
-                  py-4
-                  whitespace-no-wrap
-                  border-b border-gray-200
-                  text-sm
-                  leading-5
-                  font-medium
-                "
+                class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 font-medium"
               >
                 <form
                   action="/admin/delete-product/<%=product.id%>"

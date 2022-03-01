@@ -5,7 +5,9 @@ include("../partials/messages") %>
 <section class="py-4 bg-gray-100">
   <div class="container mx-auto">
     <div>
-      <h1 class="text-2xl font-black text-gray-900 px-6 md:px-12">Blog/Consult From Admin Side</h1>
+      <h1 class="text-2xl font-black text-gray-900 px-6 md:px-12">
+        Blog/Consult From Admin Side
+      </h1>
     </div>
     <div class="flex flex-wrap px-6">
       <%if (blog_list){ %> <% blog_list.forEach(function(eachblog){ %>
@@ -43,4 +45,4 @@ include("../partials/messages") %>
   </div>
 </section>
 <!-- for blog list  -->
-<%- include("../partials/footer") %>
+<%- include("../partials/footNav") %> <%- include("../partials/footer") %>
