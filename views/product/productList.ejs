@@ -1,8 +1,25 @@
 <%- include("../partials/header") %> <%- include("../partials/navbar") %> <%-
 include ('../partials/messages') %>
 
-<!-- search box here  -->
-<%- include ('../partials/searchbox') %>
+<!-- search bar -->
+<div class="flex relative mt-2 mx-auto w-1/4 max-w-md">
+  <form action="/product/search" method="post">
+    <input
+      style="cursor: pointer"
+      class="border-2 border-primary bg-red transition h-12 px-20 rounded-md focus:outline-none w-full text-black text-lg"
+      type="search"
+      name="search"
+      placeholder="Search products"
+    />
+    <button type="submit" class="absolute right-2 top-3 mr-4">
+      <i
+        class="fas fa-search text-black text-2xl h-6 w-6 fill-current"
+        style="color: blue"
+      ></i>
+    </button>
+  </form>
+</div>
+
 <!-- search box here  -->
 
 <!-- product heere  -->
@@ -46,7 +63,8 @@ include ('../partials/messages') %>
               name="product_id"
               hidden
             />
-            <button type="submit"
+            <button
+              type="submit"
               class="p-2 pl-3 mt-2 pr-3 bg-transparent border-2 border-indigo-500 text-indigo-500 text-sm rounded-lg hover:bg-indigo-500 hover:text-gray-100 focus:border-4 focus:border-indigo-300"
             >
               Add To Cart
@@ -59,7 +77,8 @@ include ('../partials/messages') %>
               name="product_id"
               hidden
             />
-            <button type="submit"
+            <button
+              type="submit"
               class="p-2 mt-5 pl-3 pr-3 bg-transparent border-2 border-red-500 text-red-500 text-sm rounded-lg hover:bg-red-500 hover:text-gray-100 focus:border-4 focus:border-red-300"
             >
               Favourite <i class="fa-solid fa-heart"></i>

@@ -248,13 +248,14 @@ adminRoute.post(
       sideeffects,
       dosages,
       pandw,
+      stock,
     } = req.body;
     try {
       const output = await cloudinary.uploader.upload(req.file.path, {
         folder: "products",
       });
       var sql =
-        "insert into products(name, category, description, price, image, brand, uses, sideeffects, dosages, pandw) values (?,?,?,?,?,?,?,?,?,?);";
+        "insert into products(name, category, description, price, image, brand, uses, sideeffects, dosages, pandw,stock) values (?,?,?,?,?,?,?,?,?,?,?);";
       await connection.query(
         sql,
         [
@@ -268,6 +269,7 @@ adminRoute.post(
           sideeffects,
           dosages,
           pandw,
+          stock,
         ],
         (err, result, fields) => {
           if (err) throw err;
@@ -297,33 +299,52 @@ adminRoute.post("/delete-product/:id", async (req, res) => {
 });
 
 // update product
-adminRoute.post("/update-product/:id", async (req, res) => {
-  const { id } = req.params;
-  const { productname, category, description, price, brand } = req.body;
-  try {
-    var sql = "select * from products where id = ?;";
+adminRoute.post(
+  "/update-product/:id",
+  upload.single("productimage"),
+  async (req, res) => {
+    const { id } = req.params;
+    const { productname, category, description, price, brand, stock } =
+      req.body;
+    try {
+      const output = await cloudinary.uploader.upload(req.file.path, {
+        folder: "products",
+      });
+      var sql = "select * from products where id = ?;";
 
-    await connection.query(sql, [id], function (err, result, fields) {
-      if (err) throw err;
+      await connection.query(sql, [id], function (err, result, fields) {
+        if (err) throw err;
 
-      var sql =
-        "update products set name = ?, category = ?, description = ?, price = ?,  brand = ? where id = ? ;";
-      var p_id = result[0].id;
-      connection.query(
-        sql,
-        [productname, category, description, price, brand, p_id],
-        (err, result, fields) => {
-          if (err) throw err;
+        var sql =
+          "update products set name = ?, category = ?, description = ?, price = ?, image = ?, brand = ?, stock =? where id = ? ;";
+        var p_id = result[0].id;
+        p_image = output.secure_url;
+        console.log(p_image);
+        connection.query(
+          sql,
+          [
+            productname,
+            category,
+            description,
+            price,
+            output.secure_url,
+            brand,
+            stock,
+            p_id,
+          ],
+          (err, result, fields) => {
+            if (err) throw err;
 
-          req.flash("success_msg", "Product updated uccessfully.");
-          res.redirect("/admin/all-product");
-        }
-      );
-    });
-  } catch (error) {
-    console.log(error);
+            req.flash("success_msg", "Product updated uccessfully.");
+            res.redirect("/admin/all-product");
+          }
+        );
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
-});
+);
 
 // delete user
 adminRoute.post("/delete-user/:id", async (req, res) => {

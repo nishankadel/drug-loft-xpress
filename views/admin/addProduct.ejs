@@ -169,7 +169,21 @@
               />
             </div>
           </div>
-          
+
+          <div class="mb-6 text-center">
+            <label class="block mb-2 text-sm font-bold text-gray-700">
+              In Stock
+            </label>
+            <input
+              class="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+              type="number"
+              name="stock"
+              min="0"
+              value="0"
+              oninput="validity.valid||(value='');"
+              required
+            />
+          </div>
           <div class="mb-6 text-center">
             <button
               class="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline"

@@ -2,6 +2,13 @@
 const express = require("express");
 const { ensureAuth, unEnsuredAuth } = require("../middlewares/protectedRoute");
 const connection = require("../db/connection");
+const { sendEmail } = require("../middlewares/sendEmail");
+require("dotenv").config();
+
+var Publishable_Key = process.env.STRIPE_PUBLISHABLE_KEY;
+var Secret_Key = process.env.STRIPE_SECRET_KEY;
+
+const stripe = require("stripe")(Secret_Key);
 
 //creating productRoute
 const productRoute = express.Router();
@@ -36,6 +43,26 @@ productRoute.get("/single-product/:id", async (req, res) => {
   }
 });
 
+// SELECT * from books where ${req.params.level} LIKE '${req.params.name}%'
+// search
+productRoute.post("/search", async (req, res) => {
+  const search_name = req.body.search;
+  let product_list = [];
+  // var sql = "select * from products where name = ?;";
+  await connection.query(
+    `select * from products where name like '%${search_name}%' or category like '%${search_name}%' or brand like '%${search_name}%';`,
+    (err, result, fields) => {
+      if (err) throw err;
+      product_list = result;
+      res.render("product/productList", { product_list });
+    }
+  );
+  try {
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // ad to cart get method
 var cart_items;
 productRoute.get("/cart", ensureAuth, async (req, res) => {
@@ -58,12 +85,56 @@ productRoute.get("/cart", ensureAuth, async (req, res) => {
             }
           });
           console.log(total_cart_items.length);
-          res.render("product/cart", { total_cart_items });
+          res.render("product/cart", {
+            total_cart_items,
+            key: Publishable_Key,
+            name: req.user.name,
+          });
         });
       } else {
-        res.render("product/cart", { total_cart_items });
+        res.render("product/cart", {
+          total_cart_items,
+          key: Publishable_Key,
+          name: req.user.name,
+        });
         console.log(total_cart_items.length);
       }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// update quantity
+productRoute.post("/update-cart", async (req, res) => {
+  const { quantityUpdate, cart_id } = req.body;
+
+  try {
+    console.log(quantityUpdate);
+    console.log(cart_id);
+    var sql = "update cart set quantity = ? where cart_id = ? ;";
+    connection.query(
+      sql,
+      [parseInt(quantityUpdate), cart_id],
+      (err, result, fields) => {
+        if (err) throw err;
+        req.flash("success_msg", "Cart Quantity is updated uccessfully.");
+        res.redirect("/product/cart");
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// clear cart
+productRoute.post("/clear-cart", async (req, res) => {
+  try {
+    var sql = "DELETE FROM cart WHERE user_id = ?;";
+    connection.query(sql, [req.user.id], (err, result, fields) => {
+      if (err) throw err;
+      req.flash("success_msg", "Cart cleared uccessfully.");
+      res.redirect("/product/cart");
     });
   } catch (error) {
     console.log(error);
@@ -82,10 +153,11 @@ productRoute.post("/add-to-cart", ensureAuth, async (req, res) => {
       async (err, result, fields) => {
         if (result.length == 0) {
           console.log("added");
-          var sql = "insert into cart(user_id,product_id) values (?,?);";
+          var sql =
+            "insert into cart(user_id,product_id, quantity) values (?,?,?);";
           await connection.query(
             sql,
-            [req.user.id, product_id],
+            [req.user.id, product_id, 1],
             (err, result, fields) => {
               if (err) throw err;
               req.flash("success_msg", "Product added to cart successfuly.");
@@ -205,9 +277,89 @@ productRoute.post("/delete-favourite/:id", async (req, res) => {
 });
 
 // payment get method
-productRoute.get("/payment", async (req, res) => {
+productRoute.post("/payment", ensureAuth, async function (req, res) {
+  const amount = req.body.amount;
   try {
-    res.render("product/payment");
+    var sql = "select * from user where id = ?;";
+    await connection.query(sql, [req.user.id], (err, result, fields) => {
+      if (err) throw err;
+      console.log(result);
+      // Moreover you can take more details from user
+      // like Address, Name, etc from form
+      stripe.customers
+        .create({
+          email: result[0].email,
+          source: req.body.stripeToken,
+          name: result[0].fullname,
+          address: {
+            city: result[0].address,
+          },
+        })
+        .then((customer) => {
+          return stripe.charges.create({
+            amount: amount, // Charing Rs 25
+            description: "Product From DLX",
+            currency: "USD",
+            customer: customer.id,
+            receipt_email: result[0].email,
+          });
+        })
+        .then(async (charge) => {
+          console.log(charge);
+          sendEmail(
+            req.user.email,
+            "d-ef7a82a80d4d44948bf54feca369a1d8",
+            req.user.fullname,
+            amount
+          );
+          var sql = "DELETE FROM cart WHERE user_id = ?;";
+          await connection.query(sql, [req.user.id], (err, result, fields) => {
+            if (err) throw err;
+          });
+          req.flash("success_msg", "Payment Done successfuly.");
+          res.redirect("/"); // If no error occurs
+        })
+        .catch((err) => {
+          req.flash("error_msg", "Payment failed due to low balance.");
+          res.redirect("/");
+          console.log(err);
+        });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+productRoute.post("/cash-on-delivery", ensureAuth, async function (req, res) {
+  const amount = req.body.amount;
+  try {
+    var sql = "select * from user where id =?;";
+    await connection.query(sql, [req.user.id], (err, result, fields) => {
+      if (err) throw err;
+      console.log(result);
+      if (result[0].phonenumber == "" || result[0].address == "") {
+        req.flash(
+          "error_msg",
+          "Update information on your profile to place order."
+        );
+        res.redirect("/user/edit-profile");
+      } else {
+        sendEmail(
+          req.user.email,
+          "d-ef7a82a80d4d44948bf54feca369a1d8",
+          req.user.fullname,
+          amount
+        );
+        var sql = "DELETE FROM cart WHERE user_id = ?;";
+        connection.query(sql, [req.user.id], (err, result, fields) => {
+          if (err) throw err;
+        });
+        req.flash("success_msg", "Order has been placed successfuly.");
+        res.redirect("/");
+      }
+      // req.flash("success_msg", "Favourite deleted successfuly.");
+      // res.redirect("/product/favourite");
+    });
   } catch (error) {
     console.log(error);
   }
