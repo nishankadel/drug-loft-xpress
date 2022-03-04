@@ -326,10 +326,14 @@ productRoute.post("/payment", ensureAuth, async function (req, res) {
             a
           );
           var sql2 =
-            "insert into product_order(product_id, user_id) values (?,?);";
-          connection.query(sql2, [ids, req.user.id], (err, result, fields) => {
-            if (err) throw err;
-          });
+            "insert into product_order(product_id, user_id, total_price) values (?,?,?);";
+          connection.query(
+            sql2,
+            [ids, req.user.id, amt],
+            (err, result, fields) => {
+              if (err) throw err;
+            }
+          );
 
           var sql = "DELETE FROM cart WHERE user_id = ?;";
           await connection.query(sql, [req.user.id], (err, result, fields) => {
@@ -377,10 +381,14 @@ productRoute.post("/cash-on-delivery", ensureAuth, async function (req, res) {
 
         // order save
         var sql2 =
-          "insert into product_order(product_id, user_id) values (?,?);";
-        connection.query(sql2, [ids, req.user.id], (err, result, fields) => {
-          if (err) throw err;
-        });
+          "insert into product_order(product_id, user_id, total_price) values (?,?,?);";
+        connection.query(
+          sql2,
+          [ids, req.user.id, amount],
+          (err, result, fields) => {
+            if (err) throw err;
+          }
+        );
 
         var sql = "DELETE FROM cart WHERE user_id = ?;";
         connection.query(sql, [req.user.id], (err, result, fields) => {

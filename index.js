@@ -78,6 +78,7 @@ app.use("/admin", require("./routers/adminRoute"));
 app.use("/blogs", require("./routers/blogRoute"));
 app.use("/comments", require("./routers/commentRoute"));
 app.use("/labtest", require("./routers/labtestRoute"));
+app.use("/medicine", require("./routers/medicineRoute"));
 
 // setting up view engine
 app.set("view engine", "ejs");

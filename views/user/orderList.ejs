@@ -27,6 +27,7 @@ include("../partials/messages") %>
                   <th class="py-3 px-6 text-center">Order Id</th>
                   <th class="py-3 px-6 text-center">Ordered By</th>
                   <th class="py-3 px-6 text-center">Ordered Date</th>
+                  <th class="py-3 px-6 text-center">Total Price</th>
                   <th class="py-3 px-6 text-center">Status</th>
                 </tr>
               </thead>
@@ -47,6 +48,11 @@ include("../partials/messages") %>
                   <td class="py-3 px-6 text-center">
                     <div class="flex item-center justify-center">
                       <%= eachorder.orderAt %>
+                    </div>
+                  </td>
+                  <td class="py-3 px-6 text-center">
+                    <div class="flex item-center justify-center">
+                      <%= eachorder.total_price %>
                     </div>
                   </td>
                   <td class="py-3 px-6 text-center">
