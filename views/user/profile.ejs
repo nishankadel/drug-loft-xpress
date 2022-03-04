@@ -11,17 +11,7 @@ include("../partials/messages") %> <% if (user) {%>
 
         <a
           href="/user/edit-profile"
-          class="
-            -mt-2
-            text-md
-            font-bold
-            text-white
-            bg-gray-700
-            rounded-full
-            px-5
-            py-2
-            hover:bg-gray-800
-          "
+          class="-mt-2 text-md font-bold text-white bg-gray-700 rounded-full px-5 py-2 hover:bg-gray-800"
           >Edit</a
         >
       </div>
@@ -35,6 +25,11 @@ include("../partials/messages") %> <% if (user) {%>
           alt="user_pic"
         />
       </div>
+      <a
+        href="/user/order-list"
+        class="-mt-2 text-md font-bold text-white bg-green-700 rounded-full px-5 py-2 hover:bg-green-800"
+        >Order History</a
+      >
     </div>
 
     <div class="w-full md:w-3/5 p-8 bg-white lg:ml-4 shadow-md">
@@ -113,4 +108,4 @@ include("../partials/messages") %> <% if (user) {%>
     </div>
   </div>
 </div>
-<%}%> <%- include("../partials/footer") %>
+<%}%><%- include("../partials/footNav") %> <%- include("../partials/footer") %>

@@ -30,6 +30,7 @@ productRoute.get("/all-products", async (req, res) => {
 });
 
 var single_product;
+let commentDetails;
 productRoute.get("/single-product/:id", async (req, res) => {
   const id = req.params.id;
   try {
@@ -37,13 +38,20 @@ productRoute.get("/single-product/:id", async (req, res) => {
     await connection.query(sql, [id], (err, result, fields) => {
       single_product = result[0];
     });
-    res.render("product/singleProduct", { single_product });
+    var sql1 =
+      "select * from comments inner join user on comments.user_id = user.id where product_id = ?;";
+    connection.query(sql1, [id], function (err, result, fields) {
+      if (err) throw err;
+      commentDetails = result;
+      commentDetailsLength = result.length;
+    });
+    console.log(commentDetails);
+    res.render("product/singleProduct", { single_product, commentDetails });
   } catch (error) {
     console.log(error);
   }
 });
 
-// SELECT * from books where ${req.params.level} LIKE '${req.params.name}%'
 // search
 productRoute.post("/search", async (req, res) => {
   const search_name = req.body.search;
@@ -279,6 +287,10 @@ productRoute.post("/delete-favourite/:id", async (req, res) => {
 // payment get method
 productRoute.post("/payment", ensureAuth, async function (req, res) {
   const amount = req.body.amount;
+  const ids = req.body.ids;
+  const q = req.body.q;
+  const p = req.body.p;
+  const amt = req.body.amt;
   try {
     var sql = "select * from user where id = ?;";
     await connection.query(sql, [req.user.id], (err, result, fields) => {
@@ -306,12 +318,19 @@ productRoute.post("/payment", ensureAuth, async function (req, res) {
         })
         .then(async (charge) => {
           console.log(charge);
+          let a = `product of names ${p} with quantity ${q} respectively of total price Rs ${amt} /-`;
           sendEmail(
             req.user.email,
             "d-ef7a82a80d4d44948bf54feca369a1d8",
             req.user.fullname,
-            amount
+            a
           );
+          var sql2 =
+            "insert into product_order(product_id, user_id) values (?,?);";
+          connection.query(sql2, [ids, req.user.id], (err, result, fields) => {
+            if (err) throw err;
+          });
+
           var sql = "DELETE FROM cart WHERE user_id = ?;";
           await connection.query(sql, [req.user.id], (err, result, fields) => {
             if (err) throw err;
@@ -332,6 +351,10 @@ productRoute.post("/payment", ensureAuth, async function (req, res) {
 
 productRoute.post("/cash-on-delivery", ensureAuth, async function (req, res) {
   const amount = req.body.amount;
+  const ids = req.body.ids;
+  const q = req.body.q;
+  const p = req.body.p;
+
   try {
     var sql = "select * from user where id =?;";
     await connection.query(sql, [req.user.id], (err, result, fields) => {
@@ -344,12 +367,21 @@ productRoute.post("/cash-on-delivery", ensureAuth, async function (req, res) {
         );
         res.redirect("/user/edit-profile");
       } else {
+        let a = `product of names ${p} with quantity ${q} respectively of total price Rs ${amount} /-`;
         sendEmail(
           req.user.email,
           "d-ef7a82a80d4d44948bf54feca369a1d8",
           req.user.fullname,
-          amount
+          a
         );
+
+        // order save
+        var sql2 =
+          "insert into product_order(product_id, user_id) values (?,?);";
+        connection.query(sql2, [ids, req.user.id], (err, result, fields) => {
+          if (err) throw err;
+        });
+
         var sql = "DELETE FROM cart WHERE user_id = ?;";
         connection.query(sql, [req.user.id], (err, result, fields) => {
           if (err) throw err;

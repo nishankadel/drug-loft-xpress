@@ -10,6 +10,7 @@ const {
 } = require("../middlewares/protectedRouteAdmin");
 const cloudinary = require("../middlewares/cloudinary");
 const upload = require("../middlewares/multer");
+const { sendEmail } = require("../middlewares/sendEmail");
 
 //creating adminRoute
 const adminRoute = express.Router();
@@ -222,6 +223,48 @@ adminRoute.get(
   }
 );
 
+// GET Router for admin labtest all
+var labtest_list;
+adminRoute.get(
+  "/all-labtest",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    try {
+      var sql =
+        "select * from labtest inner join user on labtest.user_id = user.id";
+      await connection.query(sql, (err, result, fields) => {
+        labtest_list = result;
+      });
+
+      await res.render("admin/listLabTest", {
+        labtest_list,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// all orders list GET
+var all_orders;
+adminRoute.get("/all-orders", ensureAuthAdmin, checkAdmin, async (req, res) => {
+  try {
+    var sql =
+      "select * from product_order inner join user on product_order.user_id = user.id";
+    await connection.query(sql, (err, result, fields) => {
+      console.log(result);
+      all_orders = result;
+    });
+    console.log(all_orders);
+    await res.render("admin/allOrders", {
+      all_orders,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // POST ROUTER CODE GOES HERE
 // POSt Router for admin login
 adminRoute.post("/login", async (req, res, next) => {
@@ -431,6 +474,21 @@ adminRoute.post(
   }
 );
 
+// delete feedback
+adminRoute.post("/delete-feedback/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    var sql = "delete from feedback where id =?;";
+    await connection.query(sql, [id], (err, result, fields) => {
+      if (err) throw err;
+      req.flash("success_msg", "Feedback deleted successfuly.");
+      res.redirect("/admin/all-feedback");
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // delete consultant
 adminRoute.post("/delete-consultant/:id", async (req, res) => {
   const { id } = req.params;
@@ -481,6 +539,72 @@ adminRoute.post(
     }
   }
 );
+
+// change status
+adminRoute.post("/change-order-status", ensureAuthAdmin, async (req, res) => {
+  const { order_id, order_status } = req.body;
+
+  console.log(order_id);
+  console.log(order_status);
+  try {
+    if (order_status == "0") {
+      req.flash("error_msg", "Please select status to update.");
+      res.redirect("/admin/all-orders");
+    } else {
+      var sql = "UPDATE product_order SET status = ? WHERE order_id = ?;";
+      connection.query(sql, [order_status, order_id], (err, result, fields) => {
+        if (err) throw err;
+
+        var sql =
+          "select * from product_order inner join user on product_order.product_id = user.id";
+        connection.query(
+          sql,
+          [order_status, order_id],
+          (err, result, fields) => {
+            if (err) throw err;
+
+            // send email
+            // sendEmail(
+            //   result[0].email,
+            //   "d-619e4c37f0c04e37bf5ea0619dedccb5",
+            //   result[0].fullname,
+            //   `${result[0].order_id} status is changed to ${result[0].status}`
+            // );
+          }
+        );
+        req.flash("success_msg", "Order Status Updated Successfully.");
+        res.redirect("/admin/all-orders");
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// change status
+adminRoute.post("/change-result-status", ensureAuthAdmin, async (req, res) => {
+  const { test_id, result_status } = req.body;
+
+  try {
+    if (result_status == "0") {
+      req.flash("error_msg", "Please select status to update.");
+      res.redirect("/admin/all-labtest");
+    } else {
+      var sql = "UPDATE labtest SET status = ?, result=? WHERE test_id = ?;";
+      connection.query(
+        sql,
+        ["done", result_status, test_id],
+        (err, result, fields) => {
+          if (err) throw err;
+          req.flash("success_msg", "Result Status Updated Successfully.");
+          res.redirect("/admin/all-labtest");
+        }
+      );
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 // exporting adminRoute
 module.exports = adminRoute;

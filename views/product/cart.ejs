@@ -19,7 +19,8 @@ include ('../partials/messages') %> <%if (total_cart_items.length>0){ %>
           </tr>
         </thead>
         <tbody>
-          <% var total_price = 0 %> <% var price_arr = [] %> <%
+          <% var q = [] %><% var p = [] %> <% var total_price = 0 %> <% var ids
+          = [] %> <% var price_arr = [] %> <%
           total_cart_items.forEach(function(cart_list){ %>
           <tr>
             <td class="hidden pb-4 md:table-cell">
@@ -93,7 +94,8 @@ include ('../partials/messages') %> <%if (total_cart_items.length>0){ %>
             </td>
             <td class="text-right">
               <% total_price = cart_list.price * cart_list.quantity%> <%
-              price_arr.push(total_price)%>
+              price_arr.push(total_price)%> <% ids.push(cart_list.product_id)%>
+              <% q.push(cart_list.quantity)%> <% p.push(cart_list.name)%>
               <span class="text-sm lg:text-base font-medium">
                 Rs <%= total_price%>
               </span>
@@ -144,6 +146,10 @@ include ('../partials/messages') %> <%if (total_cart_items.length>0){ %>
                 value="<%= parseInt(total) * 0.0083 * 100 %>"
                 name="amount"
               />
+              <input type="hidden" value="<%= total %>" name="amt" />
+              <input type="hidden" value="<%= q %>" name="q" />
+              <input type="hidden" value="<%= p %>" name="p" />
+              <input type="hidden" value="<%= ids %>" name="ids" />
               <br />
               <div
                 class="flex justify-center w-full px-10 py-3 mt-6 font-medium text-white uppercase bg-gray-800 rounded-full shadow item-center hover:bg-gray-700 focus:shadow-outline focus:outline-none"
@@ -163,11 +169,10 @@ include ('../partials/messages') %> <%if (total_cart_items.length>0){ %>
             <!-- button  -->
 
             <form action="/product/cash-on-delivery" method="post">
-              <input
-                type="hidden"
-                value="<%= parseInt(total) * 0.0083 * 100 %>"
-                name="amount"
-              />
+              <input type="hidden" value="<%= total %>" name="amount" />
+              <input type="hidden" value="<%= q %>" name="q" />
+              <input type="hidden" value="<%= p %>" name="p" />
+              <input type="hidden" value="<%= ids %>" name="ids" />
               <button
                 type="submit"
                 class="flex justify-center w-full px-10 py-3 mt-6 font-medium text-white uppercase bg-gray-800 rounded-full shadow item-center hover:bg-gray-700 focus:shadow-outline focus:outline-none"

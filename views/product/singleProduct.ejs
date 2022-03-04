@@ -54,29 +54,12 @@ include ('../partials/messages') %>
         <p class="leading-relaxed"><%= single_product.description%></p>
         <div
           class="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5"
-        >
-          <div class="flex ml-6 items-center">
-            <span class="mr-3">Quantity: </span>
-            <div class="relative">
-              <input
-                class="rounded border appearance-none border-gray-400 py-2 focus:outline-none focus:border-red-500 text-base pl-3 pr-10"
-                type="number"
-                min="1"
-                value="1"
-                oninput="validity.valid||(value='');"
-              />
-            </div>
-          </div>
-        </div>
+        ></div>
         <div class="flex">
           <span class="title-font font-medium text-2xl text-gray-900"
             >Rs <%= single_product.price %> /-</span
           >
-          <button
-            class="flex ml-auto text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded"
-          >
-            Order Now
-          </button>
+          <div class="flex ml-auto py-2 px-6 focus:outline-none rounded"></div>
           <form action="/product/add-favourite" method="post">
             <input
               type="text"
@@ -172,35 +155,95 @@ include ('../partials/messages') %>
         <div class="h-1 w-20 bg-indigo-500 rounded"></div>
       </div>
     </div>
-    Comment goes here
-    <!-- <div class="flex flex-wrap -m-4">
-      <div class="lg:w-1/4 p-4 w-1/2">
-        <a
-          href="/product/single-product"
-          class="block relative h-48 rounded overflow-hidden"
+    <!-- Comment goes here -->
+
+    <%if (commentDetails){ %> <% commentDetails.forEach(function(c){ %>
+    <section class="rounded-b-lg mt-4">
+      <div id="task-comments" class="pt-4">
+        <!--     comment-->
+        <div
+          class="bg-white rounded-lg p-3 flex flex-col justify-center items-center md:items-start shadow-lg mb-4"
         >
-          <img
-            alt="ecommerce"
-            class="object-cover object-center w-full h-full block"
-            src="https://star-name-registry.com/blog/images/d/0/1/f/a/d01faec7ef04415eec34c1bfe61913e167fb26c7-snr-blog-37-resized.jpg"
-          />
-        </a>
-        <div class="mt-4">
-          <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">
-            CATEGORY
-          </h3>
-          <h2 class="text-gray-900 title-font text-lg font-medium">
-            Shooting Stars
-          </h2>
-          <p class="mt-1 mb-1">$21.15</p>
-          <button
-            class="p-2 pl-3 pr-3 bg-transparent border-2 border-indigo-500 text-indigo-500 text-sm rounded-lg hover:bg-indigo-500 hover:text-gray-100 focus:border-4 focus:border-indigo-300"
+          <div class="flex flex-row justify-center mr-2">
+            <img
+              alt="avatar"
+              width="48"
+              height="48"
+              class="rounded-full w-10 h-10 mr-4 shadow-lg mb-4"
+              src="<%= c.avatar %>"
+            />
+            <h3
+              class="text-purple-600 font-semibold text-lg text-center md:text-left"
+            >
+              <%= c.fullname %>
+            </h3>
+          </div>
+
+          <p
+            style="width: 90%"
+            class="text-gray-600 text-lg text-center md:text-left"
           >
-            Add To Cart
-          </button>
+            <%= c.comment %>
+          </p>
+          <p
+            style="width: 90%"
+            class="text-gray-600 text-sm mt-1 text-center md:text-left"
+          >
+            <%= c.commentAt %>
+          </p>
         </div>
+        <!--  comment end-->
       </div>
-    </div> -->
+    </section>
+
+    <% }); %> <% } %>
+
+    <!-- Comment goes here -->
+    <div class="flex flex-wrap -m-4">
+      <!-- comment form -->
+      <div
+        class="flex mx-auto items-center justify-center shadow-lg mt-7 mx-8 mb-4 max-w-lg"
+      >
+        <form
+          class="w-full max-w-xl bg-white rounded-lg px-4 pt-2"
+          action="/comments/add-comment"
+          method="post"
+        >
+          <input type="hidden" name="p_id" value="<%= single_product.id%>" />
+          <div class="flex flex-wrap -mx-3 mb-6">
+            <h2 class="px-4 pt-3 pb-2 text-gray-800 text-lg">
+              Add a new comment
+            </h2>
+            <div class="w-full md:w-full px-3 mb-2 mt-2">
+              <textarea
+                class="bg-gray-100 rounded border border-gray-400 leading-normal resize-none w-full h-20 py-2 px-3 font-medium placeholder-gray-700 focus:outline-none focus:bg-white"
+                name="message"
+                placeholder="Type Your Comment"
+                required
+              ></textarea>
+            </div>
+            <div class="w-full md:w-full flex items-start md:w-full px-3">
+              <div class="-mr-1">
+                <input
+                  type="submit"
+                  class="bg-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
+                  value="Post Comment"
+                />
+              </div>
+              <div class="-mr-1 ml-2">
+                <button
+                  type="reset"
+                  class="bg-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- comment form -->
+    </div>
   </div>
 </section>
 
