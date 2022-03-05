@@ -9,7 +9,7 @@ const labtestRoute = express.Router();
 
 labtestRoute.get("/", ensureAuth, async (req, res) => {
   try {
-    var sql = "select * from labtest where user_id = ?;";
+    var sql = "select * from labtest where user_id = ?  order by test_id DESC;";
     connection.query(sql, [req.user.id], (err, result, fields) => {
       if (err) throw err;
       console.log(result);

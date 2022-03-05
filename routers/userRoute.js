@@ -128,7 +128,7 @@ userRoute.get("/order-list", ensureAuth, async (req, res) => {
   try {
     let order_list = [];
     var sql =
-      "select * from product_order inner join user on product_order.user_id = user.id where product_order.user_id = ?";
+      "select * from product_order inner join user on product_order.user_id = user.id where product_order.user_id = ?  order by order_id DESC;";
     // var sql = "select * from product_order where user_id = ?;";
     await connection.query(sql, [req.user.id], function (err, result, fields) {
       if (err) throw err;
@@ -150,7 +150,8 @@ userRoute.get("/order-details/:order_id", ensureAuth, async (req, res) => {
     let order_list = [];
     // var sql =
     //   "select * from product_order inner join user on product_order.user_id = user.id where product_order.order_id = ?";
-    var sql = "select * from product_order where order_id = ?;";
+    var sql =
+      "select * from product_order where order_id = ?  order by order_id DESC;";
     await connection.query(sql, [order_id], function (err, result, fields) {
       if (err) throw err;
       const strings = result[0].product_id;

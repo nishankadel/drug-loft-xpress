@@ -17,14 +17,16 @@ const stripe = require("stripe")(Secret_Key);
 const productRoute = express.Router();
 
 // routing
-var product_list;
+// var product_list;
 productRoute.get("/all-products", async (req, res) => {
+  let product_list = [];
   try {
-    var sql = "select * from products;";
+    var sql = "select * from products order by id DESC;";
     await connection.query(sql, (err, result, fields) => {
       if (err) throw err;
+      product_list = result;
       res.render("product/productList", {
-        product_list: result,
+        product_list,
       });
     });
   } catch (error) {
@@ -32,9 +34,11 @@ productRoute.get("/all-products", async (req, res) => {
   }
 });
 
-var single_product;
-let commentDetails;
+// var single_product;
+// let commentDetails;
 productRoute.get("/single-product/:id", async (req, res) => {
+  let single_product = [];
+  let commentDetails = [];
   const id = req.params.id;
   try {
     var sql = "select * from products where id = ?;";
@@ -47,9 +51,10 @@ productRoute.get("/single-product/:id", async (req, res) => {
       if (err) throw err;
       commentDetails = result;
       commentDetailsLength = result.length;
+
+      console.log(commentDetails);
+      res.render("product/singleProduct", { single_product, commentDetails });
     });
-    console.log(commentDetails);
-    res.render("product/singleProduct", { single_product, commentDetails });
   } catch (error) {
     console.log(error);
   }
@@ -75,8 +80,9 @@ productRoute.post("/search", async (req, res) => {
 });
 
 // ad to cart get method
-var cart_items;
+// var cart_items;
 productRoute.get("/cart", ensureAuth, async (req, res) => {
+  let cart_items = [];
   const total_cart_items = [];
   try {
     var sql = "select * from cart where user_id = ?";
@@ -85,7 +91,7 @@ productRoute.get("/cart", ensureAuth, async (req, res) => {
       console.log(result);
       if (result.length !== 0) {
         var sql =
-          "select * from cart inner join products on cart.product_id = products.id";
+          "select * from cart inner join products on cart.product_id = products.id  order by cart_id DESC";
         connection.query(sql, (err, result, fields) => {
           if (err) throw err;
           cart_items = result;
@@ -119,7 +125,7 @@ productRoute.get("/cart", ensureAuth, async (req, res) => {
 });
 
 // update quantity
-productRoute.post("/update-cart", async (req, res) => {
+productRoute.post("/update-cart", ensureAuth, async (req, res) => {
   const { quantityUpdate, cart_id } = req.body;
 
   try {
@@ -141,7 +147,7 @@ productRoute.post("/update-cart", async (req, res) => {
 });
 
 // clear cart
-productRoute.post("/clear-cart", async (req, res) => {
+productRoute.post("/clear-cart", ensureAuth, async (req, res) => {
   try {
     var sql = "DELETE FROM cart WHERE user_id = ?;";
     connection.query(sql, [req.user.id], (err, result, fields) => {
@@ -188,7 +194,7 @@ productRoute.post("/add-to-cart", ensureAuth, async (req, res) => {
   }
 });
 
-productRoute.post("/delete-cart/:id", async (req, res) => {
+productRoute.post("/delete-cart/:id", ensureAuth, async (req, res) => {
   const { id } = req.params;
   try {
     console.log(id);
@@ -204,8 +210,9 @@ productRoute.post("/delete-cart/:id", async (req, res) => {
 });
 
 // favourite get method
-var fav_items;
-productRoute.get("/favourite", async (req, res) => {
+// var fav_items;
+productRoute.get("/favourite", ensureAuth, async (req, res) => {
+  let fav_items = [];
   const total_fav_items = [];
   try {
     var sql = "select * from favourite where user_id = ?";
@@ -214,7 +221,7 @@ productRoute.get("/favourite", async (req, res) => {
       console.log(result);
       if (result.length !== 0) {
         var sql =
-          "select * from favourite inner join products on favourite.product_id = products.id";
+          "select * from favourite inner join products on favourite.product_id = products.id  order by fav_id DESC";
         connection.query(sql, (err, result, fields) => {
           if (err) throw err;
           fav_items = result;
@@ -274,7 +281,7 @@ productRoute.post("/add-favourite", ensureAuth, async (req, res) => {
 });
 
 // favourite delete method
-productRoute.post("/delete-favourite/:id", async (req, res) => {
+productRoute.post("/delete-favourite/:id", ensureAuth, async (req, res) => {
   const { id } = req.params;
   try {
     console.log(id);

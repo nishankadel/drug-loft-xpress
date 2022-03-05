@@ -248,20 +248,20 @@ include("./partials/navbar") %> <%- include ('./partials/messages') %>
       </div>
     </div>
     <div class="flex flex-wrap -m-4">
-      <%if (new_articles){ %> <% new_medicines.forEach(function(eachproduct){ %>
+      <%if (new_articles){ %> <% new_medicines.forEach(function(eacharticle){ %>
       <div class="lg:w-1/4 p-4 w-1/2">
         <a href="" class="block relative h-48 rounded overflow-hidden">
           <img
             alt="ecommerce"
             class="object-cover object-center w-full h-full block"
-            src="<%= eachproduct.image%>"
+            src="<%= eacharticle.image%>"
           />
         </a>
         <div class="mt-4">
           <h3 class="text-gray-900 title-font text-lg font-medium">
-            <%= eachproduct.title%>
+            <%= eacharticle.title%>
           </h3>
-          <p class="mt-1"><%= eachproduct.createdAt%></p>
+          <p class="mt-1"><%= eacharticle.createdAt%></p>
           <h2 class="text-gray-500 text-xs tracking-widest title-font mb-1">
             By Admin
           </h2>

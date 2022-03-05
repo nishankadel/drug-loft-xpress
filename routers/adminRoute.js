@@ -100,15 +100,16 @@ adminRoute.get("/profile", ensureAuthAdmin, checkAdmin, (req, res) => {
 });
 
 // GET Router for admin all user list
-var user_list;
+// var user_list;
 adminRoute.get("/all-user", ensureAuthAdmin, checkAdmin, async (req, res) => {
+  let user_list = [];
   try {
-    var sql = "select * from user";
+    var sql = "select * from user  order by id DESC";
     await connection.query(sql, (err, result, fields) => {
       user_list = result;
-    });
-    await res.render("admin/userList", {
-      user_list,
+      res.render("admin/userList", {
+        user_list,
+      });
     });
   } catch (error) {
     console.log(error);
@@ -116,20 +117,20 @@ adminRoute.get("/all-user", ensureAuthAdmin, checkAdmin, async (req, res) => {
 });
 
 // GET Router for admin profile
-var product_list;
+// var product_list;
 adminRoute.get(
   "/all-product",
   ensureAuthAdmin,
   checkAdmin,
   async (req, res) => {
+    let product_list = [];
     try {
-      var sql = "select * from products";
+      var sql = "select * from products  order by id DESC";
       await connection.query(sql, (err, result, fields) => {
         product_list = result;
-      });
-
-      await res.render("admin/productList", {
-        product_list,
+        res.render("admin/productList", {
+          product_list,
+        });
       });
     } catch (error) {
       console.log(error);
@@ -162,39 +163,20 @@ adminRoute.get(
   }
 );
 
-// logout router for admin
-adminRoute.get(
-  "/update-user/:id",
-  ensureAuthAdmin,
-  checkAdmin,
-  async (req, res) => {
-    const id = req.params.id;
-    try {
-      var sql = "select * from user where id =?;";
-      await connection.query(sql, [id], (err, result, fields) => {
-        res.render("admin/updateUser", {
-          users: result[0],
-        });
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-);
-
 // list consultant page
-var consultant_list;
+// var consultant_list;
 adminRoute.get(
   "/all-consultant",
   ensureAuthAdmin,
   checkAdmin,
   async (req, res) => {
+    let consultant_list = [];
     try {
-      var sql = "select * from blogs";
+      var sql = "select * from blogs  order by id DESC";
       await connection.query(sql, (err, result, fields) => {
         consultant_list = result;
+        res.render("admin/listConsultant", { consultant_list });
       });
-      await res.render("admin/listConsultant", { consultant_list });
     } catch (error) {
       console.log(error);
     }
@@ -232,18 +214,19 @@ adminRoute.get(
 );
 
 // get all feedback
-var feedback_list;
+// var feedback_list;
 adminRoute.get(
   "/all-feedback",
   ensureAuthAdmin,
   checkAdmin,
   async (req, res) => {
+    let feedback_list = [];
     try {
-      var sql = "select * from feedback";
+      var sql = "select * from feedback  order by id DESC";
       await connection.query(sql, (err, result, fields) => {
         feedback_list = result;
+        res.render("admin/listFeedback", { feedback_list });
       });
-      await res.render("admin/listFeedback", { feedback_list });
     } catch (error) {
       console.log(error);
     }
@@ -251,21 +234,21 @@ adminRoute.get(
 );
 
 // GET Router for admin labtest all
-var labtest_list;
+// var labtest_list;
 adminRoute.get(
   "/all-labtest",
   ensureAuthAdmin,
   checkAdmin,
   async (req, res) => {
+    let labtest_list = [];
     try {
       var sql =
-        "select * from labtest inner join user on labtest.user_id = user.id";
+        "select * from labtest inner join user on labtest.user_id = user.id  order by test_id DESC";
       await connection.query(sql, (err, result, fields) => {
         labtest_list = result;
-      });
-
-      await res.render("admin/listLabTest", {
-        labtest_list,
+        res.render("admin/listLabTest", {
+          labtest_list,
+        });
       });
     } catch (error) {
       console.log(error);
@@ -274,23 +257,50 @@ adminRoute.get(
 );
 
 // all orders list GET
-var all_orders;
+// var all_orders;
 adminRoute.get("/all-orders", ensureAuthAdmin, checkAdmin, async (req, res) => {
+  let all_orders = [];
+
   try {
     var sql =
-      "select * from product_order inner join user on product_order.user_id = user.id";
+      "select * from product_order inner join user on product_order.user_id = user.id  order by order_id DESC";
     await connection.query(sql, (err, result, fields) => {
       console.log(result);
       all_orders = result;
+      res.render("admin/allOrders", {
+        all_orders,
+      });
     });
     console.log(all_orders);
-    await res.render("admin/allOrders", {
-      all_orders,
-    });
   } catch (error) {
     console.log(error);
   }
 });
+
+// all medicine request list GET
+// var all_medicine_request_list;
+adminRoute.get(
+  "/all-medicine-request",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    let all_medicine_request_list = [];
+
+    try {
+      var sql =
+        "select * from medicine_request inner join user on medicine_request.user_id = user.id  order by request_id DESC";
+      await connection.query(sql, (err, result, fields) => {
+        all_medicine_request_list = result;
+        console.log(all_medicine_request_list);
+        res.render("admin/allMedicineRequest", {
+          all_medicine_request_list,
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 
 // POST ROUTER CODE GOES HERE
 // POSt Router for admin login
@@ -445,52 +455,6 @@ adminRoute.post(
   }
 );
 
-// update user
-adminRoute.post(
-  "/update-user/:id",
-  upload.single("userimage"),
-  ensureAuthAdmin,
-  checkAdmin,
-  async (req, res) => {
-    const { id } = req.params;
-    const { fullname, email, phonenumber, address, usertype } = req.body;
-    try {
-      const output = await cloudinary.uploader.upload(req.file.path, {
-        folder: "avatars",
-      });
-      var sql = "select * from user where id = ?;";
-
-      await connection.query(sql, [id], function (err, result, fields) {
-        if (err) throw err;
-
-        var sql =
-          "update user set fullname = ?, email = ?, phonenumber = ?, address = ?, avatar = ?, user_type = ? where id = ? ;";
-        var u_id = result[0].id;
-        connection.query(
-          sql,
-          [
-            fullname,
-            email,
-            phonenumber,
-            address,
-            output.secure_url,
-            usertype,
-            u_id,
-          ],
-          (err, result, fields) => {
-            if (err) throw err;
-
-            req.flash("success_msg", "User updated uccessfully.");
-            res.redirect("/admin/all-user");
-          }
-        );
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-);
-
 // Post Router for admin add consultant
 adminRoute.post(
   "/add-consultant",
@@ -597,7 +561,7 @@ adminRoute.post(
   }
 );
 
-// change status
+// change order status
 adminRoute.post(
   "/change-order-status",
   ensureAuthAdmin,
@@ -647,7 +611,7 @@ adminRoute.post(
   }
 );
 
-// change status
+// change result status
 adminRoute.post(
   "/change-result-status",
   ensureAuthAdmin,
@@ -668,6 +632,37 @@ adminRoute.post(
             if (err) throw err;
             req.flash("success_msg", "Result Status Updated Successfully.");
             res.redirect("/admin/all-labtest");
+          }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// change request status
+adminRoute.post(
+  "/change-request-status",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const { request_id, request_status } = req.body;
+
+    try {
+      if (request_status == "0") {
+        req.flash("error_msg", "Please select status to update.");
+        res.redirect("/admin/all-medicine-request");
+      } else {
+        var sql =
+          "UPDATE medicine_request SET status = ? WHERE request_id = ?;";
+        connection.query(
+          sql,
+          [request_status, request_id],
+          (err, result, fields) => {
+            if (err) throw err;
+            req.flash("success_msg", "Request Status Updated Successfully.");
+            res.redirect("/admin/all-medicine-request");
           }
         );
       }

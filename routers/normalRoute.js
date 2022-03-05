@@ -8,16 +8,18 @@ const { sendEmail } = require("../middlewares/sendEmail");
 const normalRoute = express.Router();
 
 // routing
-var new_medicines;
-var new_articles;
+// var new_medicines;
+// var new_articles;
 normalRoute.get("/", async (req, res) => {
+  let new_medicines = [];
+  let new_articles = [];
   try {
-    var sql = "select * from products order by id limit 4;";
+    var sql = "select * from products order by id DESC limit 8 ;";
     await connection.query(sql, (err, result, fields) => {
       if (err) throw err;
 
       // new article
-      var sql = "select * from blogs order by id limit 4;";
+      var sql = "select * from blogs order by id  DESC limit 4;";
       connection.query(sql, (err, result, fields) => {
         new_articles = result;
       });
@@ -39,7 +41,7 @@ normalRoute.get("/contact", ensureAuth, (req, res) => {
   res.render("contact");
 });
 
-normalRoute.post("/contact", async (req, res) => {
+normalRoute.post("/contact", ensureAuth, async (req, res) => {
   const message = req.body.message;
   try {
     var sql = "insert into feedback(name, email, message) values (?,?,?);";
@@ -62,7 +64,6 @@ normalRoute.post("/contact", async (req, res) => {
     console.log(error);
   }
 });
-
 
 // exporting normalRoute
 module.exports = normalRoute;
