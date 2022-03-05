@@ -265,13 +265,11 @@ adminRoute.get("/all-orders", ensureAuthAdmin, checkAdmin, async (req, res) => {
     var sql =
       "select * from product_order inner join user on product_order.user_id = user.id  order by order_id DESC";
     await connection.query(sql, (err, result, fields) => {
-      console.log(result);
       all_orders = result;
       res.render("admin/allOrders", {
         all_orders,
       });
     });
-    console.log(all_orders);
   } catch (error) {
     console.log(error);
   }
@@ -568,9 +566,6 @@ adminRoute.post(
   checkAdmin,
   async (req, res) => {
     const { order_id, order_status } = req.body;
-
-    console.log(order_id);
-    console.log(order_status);
     try {
       if (order_status == "0") {
         req.flash("error_msg", "Please select status to update.");
@@ -583,28 +578,26 @@ adminRoute.post(
           (err, result, fields) => {
             if (err) throw err;
 
-            var sql =
-              "select * from product_order inner join user on product_order.product_id = user.id";
-            connection.query(
-              sql,
-              [order_status, order_id],
-              (err, result, fields) => {
-                if (err) throw err;
-
-                // send email
-                // sendEmail(
-                //   result[0].email,
-                //   "d-619e4c37f0c04e37bf5ea0619dedccb5",
-                //   result[0].fullname,
-                //   `${result[0].order_id} status is changed to ${result[0].status}`
-                // );
-              }
-            );
             req.flash("success_msg", "Order Status Updated Successfully.");
             res.redirect("/admin/all-orders");
           }
         );
       }
+
+      var sql1 =
+        "select * from product_order inner join user on product_order.user_id = user.id where product_order.order_id = ?;";
+      connection.query(sql1, [order_id], (err, result, fields) => {
+        if (err) throw err;
+
+        console.log(result);
+        // send email
+        sendEmail(
+          result[0].email,
+          "d-69af7da02295468cbfe634db81266541",
+          result[0].fullname,
+          `${result[0].order_id} status is changed to ${result[0].status}.`
+        );
+      });
     } catch (error) {
       console.log(error);
     }
@@ -635,6 +628,21 @@ adminRoute.post(
           }
         );
       }
+
+      var sql1 =
+        "select * from labtest inner join user on labtest.user_id = user.id where labtest.test_id = ?;";
+      connection.query(sql1, [test_id], (err, result, fields) => {
+        if (err) throw err;
+
+        console.log(result);
+        // send email
+        sendEmail(
+          result[0].email,
+          "d-64d5681d31cc4b2d8234e7ae79f6bb12",
+          result[0].fullname,
+          `${result[0].test_id} status is changed to ${result[0].status} and your result is ${result[0].result}.`
+        );
+      });
     } catch (error) {
       console.log(error);
     }
@@ -666,6 +674,21 @@ adminRoute.post(
           }
         );
       }
+
+      var sql1 =
+        "select * from medicine_request inner join user on medicine_request.user_id = user.id where medicine_request.request_id = ?;";
+      connection.query(sql1, [request_id], (err, result, fields) => {
+        if (err) throw err;
+
+        console.log(result);
+        // send email
+        sendEmail(
+          result[0].email,
+          "d-cde08cb6fcda4260932e87d66b78bfac",
+          result[0].fullname,
+          `${result[0].request_id} and medicine name ${result[0].medicine_name} status is changed to ${result[0].status}.`
+        );
+      });
     } catch (error) {
       console.log(error);
     }
