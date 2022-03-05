@@ -1,4 +1,4 @@
-<%- include("../partials/header") %> <%- include("../partials/navbar") %> <%-
+<%- include("../partials/header") %><%- include('../partials/topNav') %> <%- include("../partials/navbar") %> <%-
 include ('../partials/messages') %> <%if (total_cart_items.length>0){ %>
 <div class="flex justify-center my-6">
   <div
@@ -193,6 +193,75 @@ include ('../partials/messages') %> <%if (total_cart_items.length>0){ %>
                 <span class="ml-2 mt-5px">Cash On Delivery</span>
               </button>
             </form>
+
+            <!-- khalti ko integrate  -->
+            <script src="https://khalti.s3.ap-south-1.amazonaws.com/KPG/dist/2020.12.17.0.0.0/khalti-checkout.iffe.js"></script>
+
+            <input type="hidden" name="k_amt" id="k_amt" value="<%= total%>" />
+            <input type="hidden" value="<%= q %>" id="qq" name="qq" />
+            <input type="hidden" value="<%= p %>" id="pp" name="pp" />
+            <input type="hidden" value="<%= ids %>" id="idss" name="idss" />
+
+            <button
+              id="payment-button"
+              class="flex justify-center w-full px-10 py-3 mt-6 font-medium text-white uppercase bg-gray-800 rounded-full shadow item-center hover:bg-gray-700 focus:shadow-outline focus:outline-none"
+            >
+              Pay with Khalti
+            </button>
+
+            <script>
+              var qq = document.getElementById("qq").value;
+              var pp = document.getElementById("pp").value;
+              var idss = document.getElementById("idss").value;
+              var config = {
+                // replace the publicKey with yours
+                publicKey: "<%= pub_key%>",
+                productIdentity: "9863858053",
+                productName: "DLX",
+                productUrl: "http://gameofthrones.wikia.com/wiki/Dragons",
+                paymentPreference: [
+                  "KHALTI",
+                  "EBANKING",
+                  "MOBILE_BANKING",
+                  "CONNECT_IPS",
+                  "SCT",
+                ],
+                eventHandler: {
+                  onSuccess(payload) {
+                    // hit merchant api for initiating verfication
+                    console.log(payload);
+
+                    $.post("/product/verify-payment", {
+                      data: payload,
+                      ids: idss,
+                      quantity: qq,
+                      product_id: pp,
+                      success: function (response) {
+                        console.log(response);
+                      },
+                      error: function (error) {
+                        console.log(error);
+                      },
+                    });
+                  },
+                  onError(error) {
+                    console.log(error);
+                  },
+                  onClose() {
+                    console.log("widget is closing");
+                  },
+                },
+              };
+
+              var checkout = new KhaltiCheckout(config);
+              var btn = document.getElementById("payment-button");
+              var btn2 = document.getElementById("k_amt").value;
+              btn.onclick = function () {
+                // minimum transaction amount must be 10, i.e 1000 in paisa.
+                checkout.show({ amount: btn2 * 100 });
+              };
+            </script>
+            <!-- khalti ko integrate  -->
           </div>
         </div>
       </div>
@@ -221,4 +290,17 @@ include ('../partials/messages') %> <%if (total_cart_items.length>0){ %>
   </div>
 </div>
 
-<%}%> <%- include("../partials/footNav") %> <%- include("../partials/footer") %>
+<%}%>
+
+<script
+  src="https://code.jquery.com/jquery-3.5.1.js"
+  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+  integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+  crossorigin="anonymous"
+></script>
+
+<%- include("../partials/footNav") %> <%- include("../partials/footer") %>

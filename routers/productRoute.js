@@ -3,10 +3,13 @@ const express = require("express");
 const { ensureAuth, unEnsuredAuth } = require("../middlewares/protectedRoute");
 const connection = require("../db/connection");
 const { sendEmail } = require("../middlewares/sendEmail");
+const axios = require("axios");
 require("dotenv").config();
 
 var Publishable_Key = process.env.STRIPE_PUBLISHABLE_KEY;
 var Secret_Key = process.env.STRIPE_SECRET_KEY;
+var KHALTI_PUBLIC_KEY = process.env.KHALTI_PUBLIC_KEY;
+var KHALTI_SECRET_KEY = process.env.KHALTI_SECRET_KEY;
 
 const stripe = require("stripe")(Secret_Key);
 
@@ -96,6 +99,7 @@ productRoute.get("/cart", ensureAuth, async (req, res) => {
           res.render("product/cart", {
             total_cart_items,
             key: Publishable_Key,
+            pub_key: KHALTI_PUBLIC_KEY,
             name: req.user.name,
           });
         });
@@ -103,6 +107,7 @@ productRoute.get("/cart", ensureAuth, async (req, res) => {
         res.render("product/cart", {
           total_cart_items,
           key: Publishable_Key,
+          pub_key: KHALTI_PUBLIC_KEY,
           name: req.user.name,
         });
         console.log(total_cart_items.length);
@@ -326,10 +331,10 @@ productRoute.post("/payment", ensureAuth, async function (req, res) {
             a
           );
           var sql2 =
-            "insert into product_order(product_id, user_id, total_price) values (?,?,?);";
+            "insert into product_order(product_id, user_id, total_price, pay_type) values (?,?,?,?);";
           connection.query(
             sql2,
-            [ids, req.user.id, amt],
+            [ids, req.user.id, amt, "Stripe"],
             (err, result, fields) => {
               if (err) throw err;
             }
@@ -381,10 +386,10 @@ productRoute.post("/cash-on-delivery", ensureAuth, async function (req, res) {
 
         // order save
         var sql2 =
-          "insert into product_order(product_id, user_id, total_price) values (?,?,?);";
+          "insert into product_order(product_id, user_id, total_price, pay_type) values (?,?,?,?);";
         connection.query(
           sql2,
-          [ids, req.user.id, amount],
+          [ids, req.user.id, amount, "Cash On Delivery"],
           (err, result, fields) => {
             if (err) throw err;
           }
@@ -400,6 +405,69 @@ productRoute.post("/cash-on-delivery", ensureAuth, async function (req, res) {
       // req.flash("success_msg", "Favourite deleted successfuly.");
       // res.redirect("/product/favourite");
     });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// khalti verify payment
+productRoute.post("/verify-payment", ensureAuth, async function (req, res) {
+  let payload = req.body.data;
+  let { ids, quantity, product_id } = req.body;
+
+  console.log(payload);
+  console.log(ids);
+  console.log(quantity);
+  console.log(product_id);
+
+  try {
+    let data = {
+      token: payload.token,
+      amount: payload.amount,
+    };
+
+    let config = {
+      headers: { Authorization: `Key ${KHALTI_SECRET_KEY}` },
+    };
+    let url = "https://khalti.com/api/v2/payment/verify/";
+    axios
+      .post(url, data, config)
+      .then((response) => {
+        console.log(response.data);
+        let amt = response.data.amount / 100;
+
+        let a = `product of names ${product_id} with quantity ${quantity} respectively of total price Rs ${amt} /-`;
+        sendEmail(
+          req.user.email,
+          "d-ef7a82a80d4d44948bf54feca369a1d8",
+          req.user.fullname,
+          a
+        );
+
+        // order save
+        var sql2 =
+          "insert into product_order(product_id, user_id, total_price, pay_type) values (?,?,?,?);";
+        connection.query(
+          sql2,
+          [ids, req.user.id, amt, "Khalti"],
+          (err, result, fields) => {
+            if (err) throw err;
+          }
+        );
+
+        var sql = "DELETE FROM cart WHERE user_id = ?;";
+        connection.query(sql, [req.user.id], (err, result, fields) => {
+          if (err) throw err;
+        });
+        req.flash("success_msg", "Order has been placed successfuly.");
+        res.redirect("/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // console.log(data);
+    // console.log(payload);
   } catch (error) {
     console.log(error);
   }

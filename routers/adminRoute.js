@@ -26,7 +26,12 @@ const checkAdmin = (req, res, next) => {
 
 // GET ROUTER CODE GOES HERE
 // home page for admin
-var all_users, all_products, all_orders;
+var all_users,
+  all_products,
+  all_orders_list,
+  all_blogs_list,
+  all_feedback_list,
+  all_labtest_list;
 adminRoute.get("/", ensureAuthAdmin, checkAdmin, async (req, res) => {
   try {
     // for all user
@@ -40,6 +45,25 @@ adminRoute.get("/", ensureAuthAdmin, checkAdmin, async (req, res) => {
       all_products = result.length;
     });
 
+    var sql2 = "select * from product_order";
+    connection.query(sql2, (err, result, fields) => {
+      all_orders_list = result.length;
+    });
+
+    var sql3 = "select * from blogs";
+    connection.query(sql3, (err, result, fields) => {
+      all_blogs_list = result.length;
+    });
+
+    var sql4 = "select * from feedback";
+    connection.query(sql4, (err, result, fields) => {
+      all_feedback_list = result.length;
+    });
+
+    var sql5 = "select * from labtest";
+    connection.query(sql5, (err, result, fields) => {
+      all_labtest_list = result.length;
+    });
     // var sql2 = "select * from product_order";
     // connection.query(sql2, (err, result, fields) => {
     //   all_orders = result.length;
@@ -48,7 +72,10 @@ adminRoute.get("/", ensureAuthAdmin, checkAdmin, async (req, res) => {
     res.render("admin/dashboard", {
       all_users,
       all_products,
-      // all_orders,
+      all_orders_list,
+      all_blogs_list,
+      all_feedback_list,
+      all_labtest_list,
     });
   } catch (error) {
     console.log(error);
@@ -280,6 +307,8 @@ adminRoute.post("/login", async (req, res, next) => {
 adminRoute.post(
   "/add-product",
   upload.single("productimage"),
+  ensureAuthAdmin,
+  checkAdmin,
   async (req, res) => {
     const {
       productname,
@@ -327,24 +356,31 @@ adminRoute.post(
 );
 
 // delete product
-adminRoute.post("/delete-product/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    var sql = "delete from products where id =?;";
-    await connection.query(sql, [id], (err, result, fields) => {
-      if (err) throw err;
-      req.flash("success_msg", "Product deleted successfuly.");
-      res.redirect("/admin/all-product");
-    });
-  } catch (error) {
-    console.log(error);
+adminRoute.post(
+  "/delete-product/:id",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      var sql = "delete from products where id =?;";
+      await connection.query(sql, [id], (err, result, fields) => {
+        if (err) throw err;
+        req.flash("success_msg", "Product deleted successfuly.");
+        res.redirect("/admin/all-product");
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
-});
+);
 
 // update product
 adminRoute.post(
   "/update-product/:id",
   upload.single("productimage"),
+  ensureAuthAdmin,
+  checkAdmin,
   async (req, res) => {
     const { id } = req.params;
     const { productname, category, description, price, brand, stock } =
@@ -390,24 +426,31 @@ adminRoute.post(
 );
 
 // delete user
-adminRoute.post("/delete-user/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    var sql = "delete from user where id =?;";
-    await connection.query(sql, [id], (err, result, fields) => {
-      if (err) throw err;
-      req.flash("success_msg", "User deleted successfuly.");
-      res.redirect("/admin/all-user");
-    });
-  } catch (error) {
-    console.log(error);
+adminRoute.post(
+  "/delete-user/:id",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      var sql = "delete from user where id =?;";
+      await connection.query(sql, [id], (err, result, fields) => {
+        if (err) throw err;
+        req.flash("success_msg", "User deleted successfuly.");
+        res.redirect("/admin/all-user");
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
-});
+);
 
 // update user
 adminRoute.post(
   "/update-user/:id",
   upload.single("userimage"),
+  ensureAuthAdmin,
+  checkAdmin,
   async (req, res) => {
     const { id } = req.params;
     const { fullname, email, phonenumber, address, usertype } = req.body;
@@ -452,6 +495,8 @@ adminRoute.post(
 adminRoute.post(
   "/add-consultant",
   upload.single("consultantimage"),
+  ensureAuthAdmin,
+  checkAdmin,
   async (req, res) => {
     const { title, content } = req.body;
     try {
@@ -475,39 +520,51 @@ adminRoute.post(
 );
 
 // delete feedback
-adminRoute.post("/delete-feedback/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    var sql = "delete from feedback where id =?;";
-    await connection.query(sql, [id], (err, result, fields) => {
-      if (err) throw err;
-      req.flash("success_msg", "Feedback deleted successfuly.");
-      res.redirect("/admin/all-feedback");
-    });
-  } catch (error) {
-    console.log(error);
+adminRoute.post(
+  "/delete-feedback/:id",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      var sql = "delete from feedback where id =?;";
+      await connection.query(sql, [id], (err, result, fields) => {
+        if (err) throw err;
+        req.flash("success_msg", "Feedback deleted successfuly.");
+        res.redirect("/admin/all-feedback");
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
-});
+);
 
 // delete consultant
-adminRoute.post("/delete-consultant/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    var sql = "delete from blogs where id =?;";
-    await connection.query(sql, [id], (err, result, fields) => {
-      if (err) throw err;
-      req.flash("success_msg", "Consultant deleted successfuly.");
-      res.redirect("/admin/all-consultant");
-    });
-  } catch (error) {
-    console.log(error);
+adminRoute.post(
+  "/delete-consultant/:id",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      var sql = "delete from blogs where id =?;";
+      await connection.query(sql, [id], (err, result, fields) => {
+        if (err) throw err;
+        req.flash("success_msg", "Consultant deleted successfuly.");
+        res.redirect("/admin/all-consultant");
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
-});
+);
 
 // update user
 adminRoute.post(
   "/update-consultant/:id",
   upload.single("consultantimage"),
+  ensureAuthAdmin,
+  checkAdmin,
   async (req, res) => {
     const { id } = req.params;
     const { title, content } = req.body;
@@ -541,70 +598,84 @@ adminRoute.post(
 );
 
 // change status
-adminRoute.post("/change-order-status", ensureAuthAdmin, async (req, res) => {
-  const { order_id, order_status } = req.body;
+adminRoute.post(
+  "/change-order-status",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const { order_id, order_status } = req.body;
 
-  console.log(order_id);
-  console.log(order_status);
-  try {
-    if (order_status == "0") {
-      req.flash("error_msg", "Please select status to update.");
-      res.redirect("/admin/all-orders");
-    } else {
-      var sql = "UPDATE product_order SET status = ? WHERE order_id = ?;";
-      connection.query(sql, [order_status, order_id], (err, result, fields) => {
-        if (err) throw err;
-
-        var sql =
-          "select * from product_order inner join user on product_order.product_id = user.id";
+    console.log(order_id);
+    console.log(order_status);
+    try {
+      if (order_status == "0") {
+        req.flash("error_msg", "Please select status to update.");
+        res.redirect("/admin/all-orders");
+      } else {
+        var sql = "UPDATE product_order SET status = ? WHERE order_id = ?;";
         connection.query(
           sql,
           [order_status, order_id],
           (err, result, fields) => {
             if (err) throw err;
 
-            // send email
-            // sendEmail(
-            //   result[0].email,
-            //   "d-619e4c37f0c04e37bf5ea0619dedccb5",
-            //   result[0].fullname,
-            //   `${result[0].order_id} status is changed to ${result[0].status}`
-            // );
+            var sql =
+              "select * from product_order inner join user on product_order.product_id = user.id";
+            connection.query(
+              sql,
+              [order_status, order_id],
+              (err, result, fields) => {
+                if (err) throw err;
+
+                // send email
+                // sendEmail(
+                //   result[0].email,
+                //   "d-619e4c37f0c04e37bf5ea0619dedccb5",
+                //   result[0].fullname,
+                //   `${result[0].order_id} status is changed to ${result[0].status}`
+                // );
+              }
+            );
+            req.flash("success_msg", "Order Status Updated Successfully.");
+            res.redirect("/admin/all-orders");
           }
         );
-        req.flash("success_msg", "Order Status Updated Successfully.");
-        res.redirect("/admin/all-orders");
-      });
+      }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
   }
-});
+);
 
 // change status
-adminRoute.post("/change-result-status", ensureAuthAdmin, async (req, res) => {
-  const { test_id, result_status } = req.body;
+adminRoute.post(
+  "/change-result-status",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const { test_id, result_status } = req.body;
 
-  try {
-    if (result_status == "0") {
-      req.flash("error_msg", "Please select status to update.");
-      res.redirect("/admin/all-labtest");
-    } else {
-      var sql = "UPDATE labtest SET status = ?, result=? WHERE test_id = ?;";
-      connection.query(
-        sql,
-        ["done", result_status, test_id],
-        (err, result, fields) => {
-          if (err) throw err;
-          req.flash("success_msg", "Result Status Updated Successfully.");
-          res.redirect("/admin/all-labtest");
-        }
-      );
+    try {
+      if (result_status == "0") {
+        req.flash("error_msg", "Please select status to update.");
+        res.redirect("/admin/all-labtest");
+      } else {
+        var sql = "UPDATE labtest SET status = ?, result=? WHERE test_id = ?;";
+        connection.query(
+          sql,
+          ["done", result_status, test_id],
+          (err, result, fields) => {
+            if (err) throw err;
+            req.flash("success_msg", "Result Status Updated Successfully.");
+            res.redirect("/admin/all-labtest");
+          }
+        );
+      }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
   }
-});
+);
 
 // exporting adminRoute
 module.exports = adminRoute;

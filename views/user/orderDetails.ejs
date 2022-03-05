@@ -1,4 +1,4 @@
-<%- include("../partials/header") %> <%- include("../partials/navbar") %> <%-
+<%- include("../partials/header") %><%- include('../partials/topNav') %> <%- include("../partials/navbar") %> <%-
 include("../partials/messages") %>
 
 <section class="text-gray-600">
@@ -52,6 +52,11 @@ include("../partials/messages") %>
                   <th
                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
                   >
+                    Pay Type
+                  </th>
+                  <th
+                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                  >
                     Status
                   </th>
                 </tr>
@@ -97,6 +102,13 @@ include("../partials/messages") %>
                   >
                     <p class="text-gray-900 whitespace-no-wrap">
                       <%= order_list[0].orderAt %>
+                    </p>
+                  </td>
+                  <td
+                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm"
+                  >
+                    <p class="text-gray-900 whitespace-no-wrap">
+                      <%= order_list[0].pay_type %>
                     </p>
                   </td>
                   <td
