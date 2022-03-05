@@ -31,7 +31,9 @@ var all_users,
   all_orders_list,
   all_blogs_list,
   all_feedback_list,
-  all_labtest_list;
+  all_labtest_list,
+  all_medical_request_list,
+  all_uploaded_prescription_list;
 adminRoute.get("/", ensureAuthAdmin, checkAdmin, async (req, res) => {
   try {
     // for all user
@@ -64,10 +66,15 @@ adminRoute.get("/", ensureAuthAdmin, checkAdmin, async (req, res) => {
     connection.query(sql5, (err, result, fields) => {
       all_labtest_list = result.length;
     });
-    // var sql2 = "select * from product_order";
-    // connection.query(sql2, (err, result, fields) => {
-    //   all_orders = result.length;
-    // });
+    var sql6 = "select * from medicine_request";
+    connection.query(sql6, (err, result, fields) => {
+      all_medical_request_list = result.length;
+    });
+
+    var sql7 = "select * from prescription_upload";
+    connection.query(sql7, (err, result, fields) => {
+      all_uploaded_prescription_list = result.length;
+    });
 
     res.render("admin/dashboard", {
       all_users,
@@ -76,6 +83,8 @@ adminRoute.get("/", ensureAuthAdmin, checkAdmin, async (req, res) => {
       all_blogs_list,
       all_feedback_list,
       all_labtest_list,
+      all_medical_request_list,
+      all_uploaded_prescription_list,
     });
   } catch (error) {
     console.log(error);
@@ -292,6 +301,52 @@ adminRoute.get(
         console.log(all_medicine_request_list);
         res.render("admin/allMedicineRequest", {
           all_medicine_request_list,
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// all prescription upload list GET
+adminRoute.get(
+  "/all-prescription",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    let all_prescription_list = [];
+
+    try {
+      var sql =
+        "select * from prescription_upload inner join user on prescription_upload.user_id = user.id  order by pre_id DESC";
+      await connection.query(sql, (err, result, fields) => {
+        all_prescription_list = result;
+        console.log(all_prescription_list);
+        res.render("admin/allPrescriptionUpload", {
+          all_prescription_list,
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// update consultant page
+adminRoute.get(
+  "/add-prescription-cart/:pre_id",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const pre_id = req.params.pre_id;
+    try {
+      var sql =
+        "select * from prescription_upload inner join user on prescription_upload.user_id = user.id where prescription_upload.pre_id = ? ;";
+      await connection.query(sql, [pre_id], (err, result, fields) => {
+        console.log(result);
+        res.render("admin/prescriptionAddToCart", {
+          data: result[0],
         });
       });
     } catch (error) {
@@ -695,5 +750,102 @@ adminRoute.post(
   }
 );
 
+// change prescription status
+adminRoute.post(
+  "/change-prescription-status",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const { pre_id, prescription_status } = req.body;
+
+    try {
+      if (prescription_status == "0") {
+        req.flash("error_msg", "Please select status to update.");
+        res.redirect("/admin/all-prescription");
+      } else {
+        var sql = "UPDATE prescription_upload SET status = ? WHERE pre_id = ?;";
+        connection.query(
+          sql,
+          [prescription_status, pre_id],
+          (err, result, fields) => {
+            if (err) throw err;
+            req.flash(
+              "success_msg",
+              "Prescription Status Updated Successfully."
+            );
+            res.redirect("/admin/all-prescription");
+          }
+        );
+      }
+
+      var sql1 =
+        "select * from prescription_upload inner join user on prescription_upload.user_id = user.id where prescription_upload.pre_id = ?;";
+      connection.query(sql1, [pre_id], (err, result, fields) => {
+        if (err) throw err;
+
+        console.log(result);
+        // send email
+        sendEmail(
+          result[0].email,
+          "d-65049301f80d49f4bcf14d9af48f0dba",
+          result[0].fullname,
+          `${result[0].pre_id} status is changed to ${result[0].status}.`
+        );
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// post add prewscription to cart
+adminRoute.post(
+  "/add-prescription-cart",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const { product_id, user_id } = req.body;
+
+    try {
+      var sql = "select * from cart where product_id = ? and user_id = ?";
+      await connection.query(
+        sql,
+        [product_id, user_id],
+        async (err, result, fields) => {
+          if (result.length == 0) {
+            console.log("added");
+            var sql =
+              "insert into cart(user_id,product_id, quantity) values (?,?,?);";
+            await connection.query(
+              sql,
+              [user_id, product_id, 1],
+              (err, result, fields) => {
+                if (err) throw err;
+                req.flash("success_msg", "Product added to cart successfuly.");
+                res.redirect("/admin/all-prescription");
+              }
+            );
+            var sql1 = "select * from user where id = ?;";
+            connection.query(sql1, [user_id], (err, result, fields) => {
+              if (err) throw err;
+
+              sendEmail(
+                result[0].email,
+                "d-dfb8c124ffc142258905a843895a7a55",
+                result[0].fullname,
+                `Your product of product id ${product_id} has been added to cart successfully.`
+              );
+            });
+          } else {
+            req.flash("error_msg", "This Product is already in cart.");
+            res.redirect("/admin/add-prescription-cart");
+          }
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 // exporting adminRoute
 module.exports = adminRoute;

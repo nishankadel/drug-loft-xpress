@@ -36,7 +36,7 @@ medicineRoute.post(
     const { medicinename, medicinemg } = req.body;
     try {
       if (req.user.phonenumber == "" || req.user.address == "") {
-        req.flash("error_msg", "Product added successfuly.");
+        req.flash("error_msg", "Update your credentials.");
         res.redirect("/user/edit-profile");
       } else {
         const output = await cloudinary.uploader.upload(req.file.path, {
@@ -71,17 +71,60 @@ medicineRoute.post(
 
 // upload - prescription;
 medicineRoute.get("/upload-prescription", ensureAuth, async (req, res) => {
-  res.render("medicine/uploadPrescription");
-});
-
-// upload - prescription; POST
-medicineRoute.post("/upload-prescription", ensureAuth, async (req, res) => {
+  let prescription_list = [];
   try {
+    var sql =
+      "select * from prescription_upload inner join user on prescription_upload.user_id = user.id where prescription_upload.user_id = ?  order by pre_id DESC";
+    connection.query(sql, [req.user.id], (err, result, fields) => {
+      if (err) throw err;
+      console.log(result);
+      prescription_list = result;
+      res.render("medicine/uploadPrescription", { prescription_list });
+    });
   } catch (error) {
     console.log(error);
   }
-  res.render("medicine/uploadPrescription");
 });
+
+// upload - prescription; POST
+medicineRoute.post(
+  "/upload-prescription",
+  upload.single("prescriptionimage"),
+  ensureAuth,
+  async (req, res) => {
+    try {
+      if (req.user.phonenumber == "" || req.user.address == "") {
+        req.flash("error_msg", "Update your credentials.");
+        res.redirect("/user/edit-profile");
+      } else {
+        const output = await cloudinary.uploader.upload(req.file.path, {
+          folder: "prescriptionupload",
+        });
+        var sql =
+          "insert into prescription_upload(user_id,pre_image) values (?,?);";
+        await connection.query(
+          sql,
+          [req.user.id, output.secure_url],
+          (err, result, fields) => {
+            if (err) throw err;
+
+            sendEmail(
+              req.user.email,
+              "d-2490c7a05a394f36a0936cbfc5c7d704",
+              req.user.fullname,
+              "Your prescription image has been uploaded successfully. We will get back to you soon."
+            );
+
+            req.flash("success_msg", "Prescription uploaded successfuly.");
+            res.redirect("/medicine/upload-prescription");
+          }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 
 // exporting authRoute
 module.exports = medicineRoute;
