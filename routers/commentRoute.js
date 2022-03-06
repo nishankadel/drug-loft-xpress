@@ -9,9 +9,6 @@ const commentRoute = express.Router();
 commentRoute.post("/add-comment", ensureAuth, async (req, res) => {
   const { p_id, message } = req.body;
   try {
-    console.log(p_id);
-    console.log(message);
-
     var sql =
       "insert into comments(user_id, product_id, comment) values (?,?,?);";
     connection.query(

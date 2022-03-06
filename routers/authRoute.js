@@ -289,7 +289,6 @@ authRoute.post("/password-verification", async (req, res) => {
 // Post Router for email verification Page
 authRoute.post("/reset-password", async (req, res) => {
   password_fp = req.body.password;
-  console.log(password_fp);
   try {
     const hashPassword = bcrypt.hashSync(password_fp, 12);
     var sql = "update user set password = ? where email = ? ;";

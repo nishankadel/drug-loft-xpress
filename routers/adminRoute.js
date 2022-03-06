@@ -298,7 +298,6 @@ adminRoute.get(
         "select * from medicine_request inner join user on medicine_request.user_id = user.id  order by request_id DESC";
       await connection.query(sql, (err, result, fields) => {
         all_medicine_request_list = result;
-        console.log(all_medicine_request_list);
         res.render("admin/allMedicineRequest", {
           all_medicine_request_list,
         });
@@ -322,7 +321,6 @@ adminRoute.get(
         "select * from prescription_upload inner join user on prescription_upload.user_id = user.id  order by pre_id DESC";
       await connection.query(sql, (err, result, fields) => {
         all_prescription_list = result;
-        console.log(all_prescription_list);
         res.render("admin/allPrescriptionUpload", {
           all_prescription_list,
         });
@@ -344,7 +342,6 @@ adminRoute.get(
       var sql =
         "select * from prescription_upload inner join user on prescription_upload.user_id = user.id where prescription_upload.pre_id = ? ;";
       await connection.query(sql, [pre_id], (err, result, fields) => {
-        console.log(result);
         res.render("admin/prescriptionAddToCart", {
           data: result[0],
         });
@@ -461,7 +458,6 @@ adminRoute.post(
           "update products set name = ?, category = ?, description = ?, price = ?, image = ?, brand = ?, stock =? where id = ? ;";
         var p_id = result[0].id;
         p_image = output.secure_url;
-        console.log(p_image);
         connection.query(
           sql,
           [
@@ -644,7 +640,6 @@ adminRoute.post(
       connection.query(sql1, [order_id], (err, result, fields) => {
         if (err) throw err;
 
-        console.log(result);
         // send email
         sendEmail(
           result[0].email,
@@ -689,7 +684,6 @@ adminRoute.post(
       connection.query(sql1, [test_id], (err, result, fields) => {
         if (err) throw err;
 
-        console.log(result);
         // send email
         sendEmail(
           result[0].email,
@@ -735,7 +729,6 @@ adminRoute.post(
       connection.query(sql1, [request_id], (err, result, fields) => {
         if (err) throw err;
 
-        console.log(result);
         // send email
         sendEmail(
           result[0].email,
@@ -783,7 +776,6 @@ adminRoute.post(
       connection.query(sql1, [pre_id], (err, result, fields) => {
         if (err) throw err;
 
-        console.log(result);
         // send email
         sendEmail(
           result[0].email,
@@ -807,38 +799,53 @@ adminRoute.post(
     const { product_id, user_id } = req.body;
 
     try {
-      var sql = "select * from cart where product_id = ? and user_id = ?";
+      var sql2 = "select * from products where id = ?;";
+
       await connection.query(
-        sql,
-        [product_id, user_id],
+        sql2,
+        [product_id],
         async (err, result, fields) => {
           if (result.length == 0) {
-            console.log("added");
-            var sql =
-              "insert into cart(user_id,product_id, quantity) values (?,?,?);";
+            req.flash("error_msg", "Product is not available.");
+            res.redirect("/admin/all-prescription");
+          } else {
+            var sql = "select * from cart where product_id = ? and user_id = ?";
             await connection.query(
               sql,
-              [user_id, product_id, 1],
-              (err, result, fields) => {
-                if (err) throw err;
-                req.flash("success_msg", "Product added to cart successfuly.");
-                res.redirect("/admin/all-prescription");
+              [product_id, user_id],
+              async (err, result, fields) => {
+                if (result.length == 0) {
+                  var sql =
+                    "insert into cart(user_id,product_id, quantity) values (?,?,?);";
+                  await connection.query(
+                    sql,
+                    [user_id, product_id, 1],
+                    (err, result, fields) => {
+                      if (err) throw err;
+                      req.flash(
+                        "success_msg",
+                        "Product added to cart successfuly."
+                      );
+                      res.redirect("/admin/all-prescription");
+                    }
+                  );
+                  var sql1 = "select * from user where id = ?;";
+                  connection.query(sql1, [user_id], (err, result, fields) => {
+                    if (err) throw err;
+
+                    sendEmail(
+                      result[0].email,
+                      "d-dfb8c124ffc142258905a843895a7a55",
+                      result[0].fullname,
+                      `Your product of product id ${product_id} has been added to cart successfully.`
+                    );
+                  });
+                } else {
+                  req.flash("error_msg", "This Product is already in cart.");
+                  res.redirect("/admin/all-prescription");
+                }
               }
             );
-            var sql1 = "select * from user where id = ?;";
-            connection.query(sql1, [user_id], (err, result, fields) => {
-              if (err) throw err;
-
-              sendEmail(
-                result[0].email,
-                "d-dfb8c124ffc142258905a843895a7a55",
-                result[0].fullname,
-                `Your product of product id ${product_id} has been added to cart successfully.`
-              );
-            });
-          } else {
-            req.flash("error_msg", "This Product is already in cart.");
-            res.redirect("/admin/add-prescription-cart");
           }
         }
       );

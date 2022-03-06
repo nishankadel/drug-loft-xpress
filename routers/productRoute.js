@@ -52,7 +52,6 @@ productRoute.get("/single-product/:id", async (req, res) => {
       commentDetails = result;
       commentDetailsLength = result.length;
 
-      console.log(commentDetails);
       res.render("product/singleProduct", { single_product, commentDetails });
     });
   } catch (error) {
@@ -88,7 +87,6 @@ productRoute.get("/cart", ensureAuth, async (req, res) => {
     var sql = "select * from cart where user_id = ?";
     await connection.query(sql, [req.user.id], (err, result, fields) => {
       if (err) throw err;
-      console.log(result);
       if (result.length !== 0) {
         var sql =
           "select * from cart inner join products on cart.product_id = products.id  order by cart_id DESC";
@@ -101,7 +99,7 @@ productRoute.get("/cart", ensureAuth, async (req, res) => {
               total_cart_items.push(element);
             }
           });
-          console.log(total_cart_items.length);
+
           res.render("product/cart", {
             total_cart_items,
             key: Publishable_Key,
@@ -116,7 +114,6 @@ productRoute.get("/cart", ensureAuth, async (req, res) => {
           pub_key: KHALTI_PUBLIC_KEY,
           name: req.user.name,
         });
-        console.log(total_cart_items.length);
       }
     });
   } catch (error) {
@@ -129,8 +126,6 @@ productRoute.post("/update-cart", ensureAuth, async (req, res) => {
   const { quantityUpdate, cart_id } = req.body;
 
   try {
-    console.log(quantityUpdate);
-    console.log(cart_id);
     var sql = "update cart set quantity = ? where cart_id = ? ;";
     connection.query(
       sql,
@@ -171,7 +166,6 @@ productRoute.post("/add-to-cart", ensureAuth, async (req, res) => {
       [product_id, req.user.id],
       async (err, result, fields) => {
         if (result.length == 0) {
-          console.log("added");
           var sql =
             "insert into cart(user_id,product_id, quantity) values (?,?,?);";
           await connection.query(
@@ -197,7 +191,6 @@ productRoute.post("/add-to-cart", ensureAuth, async (req, res) => {
 productRoute.post("/delete-cart/:id", ensureAuth, async (req, res) => {
   const { id } = req.params;
   try {
-    console.log(id);
     var sql = "delete from cart where cart_id =?;";
     await connection.query(sql, [id], (err, result, fields) => {
       if (err) throw err;
@@ -218,7 +211,6 @@ productRoute.get("/favourite", ensureAuth, async (req, res) => {
     var sql = "select * from favourite where user_id = ?";
     await connection.query(sql, [req.user.id], (err, result, fields) => {
       if (err) throw err;
-      console.log(result);
       if (result.length !== 0) {
         var sql =
           "select * from favourite inner join products on favourite.product_id = products.id  order by fav_id DESC";
@@ -231,12 +223,11 @@ productRoute.get("/favourite", ensureAuth, async (req, res) => {
               total_fav_items.push(element);
             }
           });
-          console.log(total_fav_items.length);
+
           res.render("product/favourite", { total_fav_items });
         });
       } else {
         res.render("product/favourite", { total_fav_items });
-        console.log(total_fav_items.length);
       }
     });
   } catch (error) {
@@ -255,7 +246,6 @@ productRoute.post("/add-favourite", ensureAuth, async (req, res) => {
       [product_id, req.user.id],
       async (err, result, fields) => {
         if (result.length == 0) {
-          console.log("added");
           var sql = "insert into favourite(user_id,product_id) values (?,?);";
           await connection.query(
             sql,
@@ -284,7 +274,6 @@ productRoute.post("/add-favourite", ensureAuth, async (req, res) => {
 productRoute.post("/delete-favourite/:id", ensureAuth, async (req, res) => {
   const { id } = req.params;
   try {
-    console.log(id);
     var sql = "delete from favourite where fav_id =?;";
     await connection.query(sql, [id], (err, result, fields) => {
       if (err) throw err;
@@ -307,7 +296,6 @@ productRoute.post("/payment", ensureAuth, async function (req, res) {
     var sql = "select * from user where id = ?;";
     await connection.query(sql, [req.user.id], (err, result, fields) => {
       if (err) throw err;
-      console.log(result);
       // Moreover you can take more details from user
       // like Address, Name, etc from form
       stripe.customers
@@ -329,7 +317,6 @@ productRoute.post("/payment", ensureAuth, async function (req, res) {
           });
         })
         .then(async (charge) => {
-          console.log(charge);
           let a = `product of names ${p} with quantity ${q} respectively of total price Rs ${amt} /-`;
           sendEmail(
             req.user.email,
@@ -357,7 +344,6 @@ productRoute.post("/payment", ensureAuth, async function (req, res) {
         .catch((err) => {
           req.flash("error_msg", "Payment failed due to low balance.");
           res.redirect("/");
-          console.log(err);
         });
     });
   } catch (error) {
@@ -375,7 +361,7 @@ productRoute.post("/cash-on-delivery", ensureAuth, async function (req, res) {
     var sql = "select * from user where id =?;";
     await connection.query(sql, [req.user.id], (err, result, fields) => {
       if (err) throw err;
-      console.log(result);
+
       if (result[0].phonenumber == "" || result[0].address == "") {
         req.flash(
           "error_msg",
@@ -409,8 +395,6 @@ productRoute.post("/cash-on-delivery", ensureAuth, async function (req, res) {
         req.flash("success_msg", "Order has been placed successfuly.");
         res.redirect("/");
       }
-      // req.flash("success_msg", "Favourite deleted successfuly.");
-      // res.redirect("/product/favourite");
     });
   } catch (error) {
     console.log(error);
@@ -421,11 +405,6 @@ productRoute.post("/cash-on-delivery", ensureAuth, async function (req, res) {
 productRoute.post("/verify-payment", ensureAuth, async function (req, res) {
   let payload = req.body.data;
   let { ids, quantity, product_id } = req.body;
-
-  console.log(payload);
-  console.log(ids);
-  console.log(quantity);
-  console.log(product_id);
 
   try {
     let data = {
@@ -440,7 +419,6 @@ productRoute.post("/verify-payment", ensureAuth, async function (req, res) {
     axios
       .post(url, data, config)
       .then((response) => {
-        console.log(response.data);
         let amt = response.data.amount / 100;
 
         let a = `product of names ${product_id} with quantity ${quantity} respectively of total price Rs ${amt} /-`;
@@ -472,9 +450,6 @@ productRoute.post("/verify-payment", ensureAuth, async function (req, res) {
       .catch((error) => {
         console.log(error);
       });
-
-    // console.log(data);
-    // console.log(payload);
   } catch (error) {
     console.log(error);
   }

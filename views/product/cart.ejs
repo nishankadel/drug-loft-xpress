@@ -143,7 +143,7 @@ include ('../partials/messages') %> <%if (total_cart_items.length>0){ %>
             <form action="/product/payment" method="POST">
               <input
                 type="hidden"
-                value="<%= parseInt(total) * 0.0083 * 100 %>"
+                value="<%= parseFloat(total) * 0.0083 * 100 %>"
                 name="amount"
               />
               <input type="hidden" value="<%= total %>" name="amt" />

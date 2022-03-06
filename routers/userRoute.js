@@ -133,7 +133,6 @@ userRoute.get("/order-list", ensureAuth, async (req, res) => {
     await connection.query(sql, [req.user.id], function (err, result, fields) {
       if (err) throw err;
       order_list = result;
-      console.log(result);
 
       res.render("user/orderList", { order_list });
     });
@@ -145,7 +144,7 @@ userRoute.get("/order-list", ensureAuth, async (req, res) => {
 // get order list
 userRoute.get("/order-details/:order_id", ensureAuth, async (req, res) => {
   const { order_id } = req.params;
-  console.log(order_id);
+
   try {
     let order_list = [];
     // var sql =
@@ -160,13 +159,11 @@ userRoute.get("/order-details/:order_id", ensureAuth, async (req, res) => {
 
       order_list = result;
       order_list.push(usingSplit);
-      console.log(order_list);
-      console.log(order_list[1]);
+
       let looping = order_list[1];
       let name = req.user.fullname;
       let email = req.user.email;
       let id = req.user.id;
-      console.log(id);
 
       res.render("user/orderDetails", { order_list, looping, name, email });
     });

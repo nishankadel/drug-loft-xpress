@@ -18,7 +18,6 @@ medicineRoute.get("/request-medicine", ensureAuth, async (req, res) => {
       "select * from medicine_request inner join user on medicine_request.user_id = user.id where medicine_request.user_id = ?  order by request_id DESC";
     connection.query(sql, [req.user.id], (err, result, fields) => {
       if (err) throw err;
-      console.log(result);
       request_medicine_list = result;
       res.render("medicine/requestMedicine", { request_medicine_list });
     });
@@ -77,7 +76,6 @@ medicineRoute.get("/upload-prescription", ensureAuth, async (req, res) => {
       "select * from prescription_upload inner join user on prescription_upload.user_id = user.id where prescription_upload.user_id = ?  order by pre_id DESC";
     connection.query(sql, [req.user.id], (err, result, fields) => {
       if (err) throw err;
-      console.log(result);
       prescription_list = result;
       res.render("medicine/uploadPrescription", { prescription_list });
     });

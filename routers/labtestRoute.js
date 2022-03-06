@@ -12,7 +12,7 @@ labtestRoute.get("/", ensureAuth, async (req, res) => {
     var sql = "select * from labtest where user_id = ?  order by test_id DESC;";
     connection.query(sql, [req.user.id], (err, result, fields) => {
       if (err) throw err;
-      console.log(result);
+
       res.render("labtest/labtest", { test_list: result });
     });
   } catch (error) {
@@ -46,7 +46,7 @@ labtestRoute.post("/", ensureAuth, async (req, res) => {
             [labtest_type, datetime, req.user.id],
             (err, result, fields) => {
               if (err) throw err;
-              console.log(result);
+
               sendEmail(
                 req.user.email,
                 "d-619e4c37f0c04e37bf5ea0619dedccb5",
