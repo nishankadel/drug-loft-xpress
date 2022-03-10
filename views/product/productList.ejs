@@ -93,4 +93,19 @@ include ('../partials/messages') %>
 
 <!-- product heere  -->
 
-<%- include("../partials/footNav") %> <%- include("../partials/footer") %>
+<%if (product_list.length == 0){ %>
+
+<!-- component -->
+<div class="mt-20 h-screen">
+  <div class="bg-white p-6 md:mx-auto">
+    <div class="text-center">
+      <h3 class="md:text-2xl text-base text-gray-900 font-semibold text-center">
+        Nothing is on product!
+      </h3>
+      <p class="text-gray-600 my-2">Let admin to add product.</p>
+      <div class="py-10 text-center"></div>
+    </div>
+  </div>
+</div>
+
+<%}%> <%- include("../partials/footNav") %> <%- include("../partials/footer") %>

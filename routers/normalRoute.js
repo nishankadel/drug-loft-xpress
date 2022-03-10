@@ -14,18 +14,20 @@ normalRoute.get("/", async (req, res) => {
   let new_medicines = [];
   let new_articles = [];
   try {
-    var sql = "select * from products order by id DESC limit 8 ;";
-    await connection.query(sql, (err, result, fields) => {
+    var sql = "select * from products order by id DESC limit 8;";
+    await connection.query(sql, async (err, result, fields) => {
       if (err) throw err;
+      new_medicines = result;
 
       // new article
-      var sql = "select * from blogs order by id  DESC limit 4;";
-      connection.query(sql, (err, result, fields) => {
+      var sql1 = "select * from blogs order by RAND() limit 4;";
+      connection.query(sql1, (err, result, fields) => {
+        if (err) throw err;
         new_articles = result;
-      });
-      res.render("index", {
-        new_medicines: result,
-        new_articles: result,
+        res.render("index", {
+          new_medicines,
+          new_articles,
+        });
       });
     });
   } catch (error) {

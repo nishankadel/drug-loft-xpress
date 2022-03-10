@@ -44,5 +44,22 @@ include("../partials/messages") %>
     </div>
   </div>
 </section>
+
+<%if (blog_list.length == 0){ %>
+
+<!-- component -->
+<div class="mt-20 h-screen">
+  <div class="bg-white p-6 md:mx-auto">
+    <div class="text-center">
+      <h3 class="md:text-2xl text-base text-gray-900 font-semibold text-center">
+        Nothing is on blogs!
+      </h3>
+      <p class="text-gray-600 my-2">Let admin to write blogs.</p>
+      <div class="py-10 text-center"></div>
+    </div>
+  </div>
+</div>
+
+<%}%>
 <!-- for blog list  -->
 <%- include("../partials/footNav") %> <%- include("../partials/footer") %>
