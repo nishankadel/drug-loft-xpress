@@ -24,13 +24,22 @@ blogRoute.get("/", async (req, res) => {
 // var single_blog;
 blogRoute.get("/view-blog/:id", async (req, res) => {
   let single_blog = [];
+  let commentDetails = [];
   const id = req.params.id;
   try {
     var sql = "select * from blogs where id = ?;";
     await connection.query(sql, [id], (err, result, fields) => {
       single_blog = result[0];
 
-      res.render("blogs/viewBlog", { single_blog });
+      var sql1 =
+        "select * from blog_comments inner join user on blog_comments.user_id = user.id where blog_id = ?;";
+      connection.query(sql1, [id], function (err, result, fields) {
+        if (err) throw err;
+        commentDetails = result;
+        commentDetailsLength = result.length;
+
+        res.render("blogs/viewBlog", { single_blog, commentDetails });
+      });
     });
   } catch (error) {
     console.log(error);

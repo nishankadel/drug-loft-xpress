@@ -26,7 +26,6 @@ include ('../partials/messages') %>
 
 <%if (single_product){ %>
 
-<!-- component -->
 <section class="text-gray-700 body-font overflow-hidden bg-white">
   <div class="container px-5 py-20 mx-auto">
     <div class="lg:w-4/5 mx-auto flex flex-wrap">
@@ -45,7 +44,9 @@ include ('../partials/messages') %>
         <div class="flex mb-4">
           <span class="flex items-center">
             <%= single_product.createdAt%>
-            <span class="text-gray-600 ml-3">4 Reviews</span>
+            <span class="text-gray-600 ml-3"
+              ><%= commentDetails.length %> Reviews</span
+            >
           </span>
           <span class="flex ml-3 pl-3 py-2 border-l-2 border-gray-200">
             <%= single_product.category%>
@@ -114,7 +115,7 @@ include ('../partials/messages') %>
     </div>
   </div>
   <!-- additional details  -->
-  <div class="flex flex-wrap w-full mb-5 ml-10">
+  <div class="container flex flex-wrap w-full mb-5 ml-10">
     <div class="w-full mb-6 lg:mb-0">
       <h3 class="sm:text-2xl text-3xl font-bold font-medium mb-2 text-gray-900">
         Uses
@@ -199,6 +200,7 @@ include ('../partials/messages') %>
     <% }); %> <% } %>
 
     <!-- Comment goes here -->
+    <% if (user){%>
     <div class="flex flex-wrap -m-4">
       <!-- comment form -->
       <div
@@ -244,8 +246,82 @@ include ('../partials/messages') %>
       </div>
       <!-- comment form -->
     </div>
+    <%}%>
   </div>
 </section>
 
-<% } %> <%- include("../partials/footNav") %> <%- include("../partials/footer")
-%>
+<% } %>
+
+<!-- new Products  -->
+<section class="text-gray-600">
+  <div class="container px-3 py-3 mx-auto">
+    <div class="flex flex-wrap w-full mb-8">
+      <div class="w-full mb-6 lg:mb-0">
+        <h1
+          class="sm:text-4xl text-5xl font-bold font-medium title-font mb-2 text-gray-900"
+        >
+          Other Medicines
+        </h1>
+        <div class="h-1 w-20 bg-indigo-500 rounded"></div>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap -m-4">
+      <%if (other_medicines){ %> <%
+      other_medicines.forEach(function(eachproduct){ %>
+      <div class="lg:w-1/4 p-4 w-1/2">
+        <a
+          href="/product/single-product/<%=eachproduct.id%>"
+          class="block relative h-48 rounded overflow-hidden"
+        >
+          <img
+            alt="ecommerce"
+            class="object-cover object-center w-full h-full block"
+            src="<%= eachproduct.image%>"
+          />
+        </a>
+        <div class="mt-4">
+          <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">
+            <%= eachproduct.category%>
+          </h3>
+          <h2 class="text-gray-900 title-font text-lg font-medium">
+            <%= eachproduct.name%>
+          </h2>
+          <p class="mt-1">Rs <%= eachproduct.price%> /-</p>
+          <form action="/product/add-to-cart" method="post">
+            <input
+              type="text"
+              value=" <%= eachproduct.id%>"
+              name="product_id"
+              hidden
+            />
+            <button
+              type="submit"
+              class="p-2 pl-3 mt-2 pr-3 bg-transparent border-2 border-indigo-500 text-indigo-500 text-sm rounded-lg hover:bg-indigo-500 hover:text-gray-100 focus:border-4 focus:border-indigo-300"
+            >
+              Add To Cart
+            </button>
+          </form>
+          <form action="/product/add-favourite" method="post">
+            <input
+              type="text"
+              value=" <%= eachproduct.id%>"
+              name="product_id"
+              hidden
+            />
+            <button
+              type="submit"
+              class="p-2 mt-5 pl-3 pr-3 bg-transparent border-2 border-red-500 text-red-500 text-sm rounded-lg hover:bg-red-500 hover:text-gray-100 focus:border-4 focus:border-red-300"
+            >
+              Favourite <i class="fa-solid fa-heart"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+      <% }); %> <% } %>
+    </div>
+  </div>
+</section>
+<!-- new products  -->
+
+<%- include("../partials/footNav") %> <%- include("../partials/footer") %>

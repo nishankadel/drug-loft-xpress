@@ -438,7 +438,6 @@ adminRoute.post(
 // update product
 adminRoute.post(
   "/update-product/:id",
-  upload.single("productimage"),
   ensureAuthAdmin,
   checkAdmin,
   async (req, res) => {
@@ -446,30 +445,21 @@ adminRoute.post(
     const { productname, category, description, price, brand, stock } =
       req.body;
     try {
-      const output = await cloudinary.uploader.upload(req.file.path, {
-        folder: "products",
-      });
+      // const output = await cloudinary.uploader.upload(req.file.path, {
+      //   folder: "products",
+      // });
       var sql = "select * from products where id = ?;";
 
       await connection.query(sql, [id], function (err, result, fields) {
         if (err) throw err;
 
         var sql =
-          "update products set name = ?, category = ?, description = ?, price = ?, image = ?, brand = ?, stock =? where id = ? ;";
+          "update products set name = ?, category = ?, description = ?, price = ?, brand = ?, stock =? where id = ? ;";
         var p_id = result[0].id;
-        p_image = output.secure_url;
+        // p_image = output.secure_url;
         connection.query(
           sql,
-          [
-            productname,
-            category,
-            description,
-            price,
-            output.secure_url,
-            brand,
-            stock,
-            p_id,
-          ],
+          [productname, category, description, price, brand, stock, p_id],
           (err, result, fields) => {
             if (err) throw err;
 

@@ -39,12 +39,21 @@ productRoute.get("/all-products", async (req, res) => {
 productRoute.get("/single-product/:id", async (req, res) => {
   let single_product = [];
   let commentDetails = [];
+  let other_medicines = [];
   const id = req.params.id;
   try {
     var sql = "select * from products where id = ?;";
     await connection.query(sql, [id], (err, result, fields) => {
       single_product = result[0];
     });
+
+    // other products
+    var sql1 = "select * from products order by RAND() limit 4;";
+    connection.query(sql1, (err, result, fields) => {
+      if (err) throw err;
+      other_medicines = result;
+    });
+
     var sql1 =
       "select * from comments inner join user on comments.user_id = user.id where product_id = ?;";
     connection.query(sql1, [id], function (err, result, fields) {
@@ -52,7 +61,11 @@ productRoute.get("/single-product/:id", async (req, res) => {
       commentDetails = result;
       commentDetailsLength = result.length;
 
-      res.render("product/singleProduct", { single_product, commentDetails });
+      res.render("product/singleProduct", {
+        single_product,
+        commentDetails,
+        other_medicines,
+      });
     });
   } catch (error) {
     console.log(error);
