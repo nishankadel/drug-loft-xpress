@@ -20,13 +20,45 @@ const productRoute = express.Router();
 // var product_list;
 productRoute.get("/all-products", async (req, res) => {
   let product_list = [];
+  const resultsPerPage = 4;
   try {
     var sql = "select * from products order by id DESC;";
     await connection.query(sql, (err, result, fields) => {
       if (err) throw err;
-      product_list = result;
-      res.render("product/productList", {
-        product_list,
+
+      const numOfResults = result.length;
+      const numberOfPages = Math.ceil(numOfResults / resultsPerPage);
+      let page = req.query.page ? Number(req.query.page) : 1;
+      if (page > numberOfPages) {
+        res.redirect(
+          "/product/all-products?page=" + encodeURIComponent(numberOfPages)
+        );
+      } else if (page < 1) {
+        res.redirect("/product/all-products?page=" + encodeURIComponent("1"));
+      }
+      //Determine the SQL LIMIT starting number
+      const startingLimit = (page - 1) * resultsPerPage;
+      //Get the relevant number of POSTS for this starting page
+      sql1 = `select * from products order by id DESC LIMIT ${startingLimit},${resultsPerPage}`;
+      connection.query(sql1, (err, result) => {
+        if (err) throw err;
+        let iterator = page - 5 < 1 ? 1 : page - 5;
+        let endingLink =
+          iterator + 9 <= numberOfPages
+            ? iterator + 9
+            : page + (numberOfPages - page);
+        if (endingLink < page + 4) {
+          iterator -= page + 4 - numberOfPages;
+        }
+
+        product_list = result;
+        res.render("product/productList", {
+          product_list,
+          page,
+          iterator,
+          endingLink,
+          numberOfPages,
+        });
       });
     });
   } catch (error) {
@@ -81,8 +113,9 @@ productRoute.post("/search", async (req, res) => {
     `select * from products where name like '%${search_name}%' or category like '%${search_name}%' or brand like '%${search_name}%';`,
     (err, result, fields) => {
       if (err) throw err;
+
       product_list = result;
-      res.render("product/productList", { product_list });
+      res.render("product/searchedProducts", { product_list });
     }
   );
   try {

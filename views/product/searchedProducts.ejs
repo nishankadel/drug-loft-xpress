@@ -98,51 +98,6 @@ include ('../partials/messages') %>
 </section>
 <!-- product heere  -->
 
-<!-- pagination  -->
-<div class="max-w-2xl mx-auto my-10">
-  <nav aria-label="Page navigation example  mt-4 ml-20 pl-20">
-    <ul class="inline-flex -space-x-px pl-20">
-      <% if(page > 1) { %>
-      <li>
-        <a
-          href="/product/all-products?page=<%=page-1%>"
-          class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-          >Previous</a
-        >
-      </li>
-      <% } %> <% for(let i= iterator; i <= endingLink; i++) { %> <% if(i ===
-      page) { %>
-      <li>
-        <a
-          href="/product/all-products?page=<%=i%>"
-          class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-          ><%=i%></a
-        >
-      </li>
-      <% continue; %> <% } %>
-
-      <li>
-        <a
-          href="/product/all-products?page=<%=i%>"
-          class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-          ><%=i%></a
-        >
-      </li>
-      <% } %> <% if(page < numberOfPages) { %>
-      <li>
-        <a
-          href="/product/all-products?page=<%=page+1%>"
-          class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-          >Next</a
-        >
-      </li>
-
-      <% } %>
-    </ul>
-  </nav>
-</div>
-<!-- pagination  -->
-
 <%if (product_list.length == 0){ %>
 
 <!-- component -->
