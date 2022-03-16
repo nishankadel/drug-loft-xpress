@@ -58,6 +58,7 @@ include ('../partials/messages') %>
             </h2></a
           >
           <p class="mt-1 mb-1">Rs <%= eachproduct.price%> /-</p>
+          <% if(eachproduct.stock > 0) {%>
           <form action="/product/add-to-cart" method="post">
             <input
               type="text"
@@ -72,6 +73,9 @@ include ('../partials/messages') %>
               Add To Cart
             </button>
           </form>
+          <% }else{ %>
+          <p class="text-red-700 mb-2 mt-3 md:ml-4 ">Out of Stock</p>
+          <% } %>
           <form action="/product/add-favourite" method="post">
             <input
               type="text"

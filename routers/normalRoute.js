@@ -14,7 +14,7 @@ normalRoute.get("/", async (req, res) => {
   let new_medicines = [];
   let new_articles = [];
   try {
-    var sql = "select * from products order by id DESC limit 8;";
+    var sql = "select * from products order by id DESC limit 4;";
     await connection.query(sql, async (err, result, fields) => {
       if (err) throw err;
       new_medicines = result;

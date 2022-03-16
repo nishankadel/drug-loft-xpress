@@ -43,6 +43,7 @@ include ('../partials/messages') %> <%if (total_fav_items.length>0){ %>
             </td>
 
             <td class="text-right">
+              <% if(fav_list.stock > 0) {%>
               <form action="/product/add-to-cart" method="post">
                 <input
                   type="text"
@@ -57,6 +58,9 @@ include ('../partials/messages') %> <%if (total_fav_items.length>0){ %>
                   Add To Cart
                 </button>
               </form>
+              <% }else{ %>
+                <p class="text-red-700 mb-2 md:ml-4">Out of Stock</p>
+              <%  } %>
             </td>
           </tr>
           <% }); %>
