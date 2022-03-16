@@ -387,7 +387,7 @@ adminRoute.post(
         folder: "products",
       });
       var sql =
-        "insert into products(name, category, description, price, image, brand, uses, sideeffects, dosages, pandw,stock) values (?,?,?,?,?,?,?,?,?,?,?);";
+        "insert into products(name, category, description, price, image, cloudinary_pub_id, brand, uses, sideeffects, dosages, pandw,stock) values (?,?,?,?,?,?,?,?,?,?,?,?);";
       await connection.query(
         sql,
         [
@@ -396,6 +396,7 @@ adminRoute.post(
           description,
           price,
           output.secure_url,
+          output.public_id,
           brand,
           uses,
           sideeffects,
@@ -423,11 +424,17 @@ adminRoute.post(
   async (req, res) => {
     const { id } = req.params;
     try {
-      var sql = "delete from products where id =?;";
-      await connection.query(sql, [id], (err, result, fields) => {
+      var sql1 = "select cloudinary_pub_id from products where id = ?;";
+      await connection.query(sql1, [id], async (err, result, fields) => {
         if (err) throw err;
-        req.flash("success_msg", "Product deleted successfuly.");
-        res.redirect("/admin/all-product");
+        cloudinary.uploader.destroy(result[0].cloudinary_pub_id);
+
+        var sql = "delete from products where id =?;";
+        await connection.query(sql, [id], (err, result, fields) => {
+          if (err) throw err;
+          req.flash("success_msg", "Product deleted successfuly.");
+          res.redirect("/admin/all-product");
+        });
       });
     } catch (error) {
       console.log(error);
@@ -506,10 +513,11 @@ adminRoute.post(
       const output = await cloudinary.uploader.upload(req.file.path, {
         folder: "blogs",
       });
-      var sql = "insert into blogs(title, description, image) values (?,?,?);";
+      var sql =
+        "insert into blogs(title, description, image, cloudinary_pub_id) values (?,?,?,?);";
       await connection.query(
         sql,
-        [title, content, output.secure_url],
+        [title, content, output.secure_url, output.public_id],
         (err, result, fields) => {
           if (err) throw err;
           req.flash("success_msg", "Consultant added successfuly.");
@@ -550,11 +558,17 @@ adminRoute.post(
   async (req, res) => {
     const { id } = req.params;
     try {
-      var sql = "delete from blogs where id =?;";
-      await connection.query(sql, [id], (err, result, fields) => {
+      var sql1 = "select cloudinary_pub_id from blogs where id = ?;";
+      await connection.query(sql1, [id], async (err, result, fields) => {
         if (err) throw err;
-        req.flash("success_msg", "Consultant deleted successfuly.");
-        res.redirect("/admin/all-consultant");
+        cloudinary.uploader.destroy(result[0].cloudinary_pub_id);
+
+        var sql = "delete from blogs where id =?;";
+        await connection.query(sql, [id], (err, result, fields) => {
+          if (err) throw err;
+          req.flash("success_msg", "Consultant deleted successfuly.");
+          res.redirect("/admin/all-consultant");
+        });
       });
     } catch (error) {
       console.log(error);
