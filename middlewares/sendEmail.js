@@ -1,9 +1,9 @@
 // send email by nodemailer
 const sgMail = require("@sendgrid/mail");
+require("dotenv").config();
 
 exports.sendEmail = (email, templateId, username, token) => {
-  const apiKey =
-    "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";
+  const apiKey = process.env.SENDGRID_APIKEY;
   sgMail.setApiKey(apiKey);
 
   const msg = {
