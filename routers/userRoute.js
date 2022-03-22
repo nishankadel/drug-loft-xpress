@@ -173,5 +173,23 @@ userRoute.get("/order-details/:order_id", ensureAuth, async (req, res) => {
   }
 });
 
+// get appointment list
+userRoute.get("/appointment-list", ensureAuth, async (req, res) => {
+  try {
+    let appointment_list = [];
+    var sql =
+      "select * from appointment_book inner join user on appointment_book.user_id = user.id where appointment_book.user_id = ?  order by app_id DESC;";
+    // var sql = "select * from product_order where user_id = ?;";
+    await connection.query(sql, [req.user.id], function (err, result, fields) {
+      if (err) throw err;
+      appointment_list = result;
+
+      res.render("user/appointmentList", { appointment_list });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // exporting userRoute
 module.exports = userRoute;

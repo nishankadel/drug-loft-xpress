@@ -33,7 +33,9 @@ var all_users,
   all_feedback_list,
   all_labtest_list,
   all_medical_request_list,
-  all_uploaded_prescription_list;
+  all_uploaded_prescription_list,
+  all_specialist_list,
+  all_appointment_list;
 adminRoute.get("/", ensureAuthAdmin, checkAdmin, async (req, res) => {
   try {
     // for all user
@@ -76,15 +78,27 @@ adminRoute.get("/", ensureAuthAdmin, checkAdmin, async (req, res) => {
       all_uploaded_prescription_list = result.length;
     });
 
-    res.render("admin/dashboard", {
-      all_users,
-      all_products,
-      all_orders_list,
-      all_blogs_list,
-      all_feedback_list,
-      all_labtest_list,
-      all_medical_request_list,
-      all_uploaded_prescription_list,
+    var sql7 = "select * from specialist";
+    connection.query(sql7, (err, result, fields) => {
+      all_specialist_list = result.length;
+    });
+
+    var sql7 = "select * from appointment_book";
+    connection.query(sql7, (err, result, fields) => {
+      all_appointment_list = result.length;
+
+      res.render("admin/dashboard", {
+        all_users,
+        all_products,
+        all_orders_list,
+        all_blogs_list,
+        all_feedback_list,
+        all_labtest_list,
+        all_medical_request_list,
+        all_uploaded_prescription_list,
+        all_specialist_list,
+        all_appointment_list,
+      });
     });
   } catch (error) {
     console.log(error);
@@ -285,7 +299,6 @@ adminRoute.get("/all-orders", ensureAuthAdmin, checkAdmin, async (req, res) => {
 });
 
 // all medicine request list GET
-// var all_medicine_request_list;
 adminRoute.get(
   "/all-medicine-request",
   ensureAuthAdmin,
@@ -344,6 +357,81 @@ adminRoute.get(
       await connection.query(sql, [pre_id], (err, result, fields) => {
         res.render("admin/prescriptionAddToCart", {
           data: result[0],
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// get all specialities
+adminRoute.get(
+  "/all-specialities",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    let specialities_list = [];
+    try {
+      var sql = "select * from specialist  order by spec_id DESC";
+      await connection.query(sql, (err, result, fields) => {
+        specialities_list = result;
+        res.render("admin/allSpecialities", { specialities_list });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// get all specialities
+adminRoute.get(
+  "/add-specialities",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    try {
+      res.render("admin/addSpecialities");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// get all specialities
+adminRoute.get(
+  "/add-doctors",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    let doc_list = [];
+    try {
+      var sql = "select * from doctors  order by doc_id DESC";
+      await connection.query(sql, (err, result, fields) => {
+        doc_list = result;
+        res.render("admin/addDoctors", { doc_list });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// all appointment list GET
+adminRoute.get(
+  "/all-appointment",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    let all_appointment = [];
+
+    try {
+      var sql =
+        "select * from appointment_book inner join user on appointment_book.user_id = user.id  order by app_id DESC";
+      await connection.query(sql, (err, result, fields) => {
+        all_appointment = result;
+        res.render("admin/allAppointment", {
+          all_appointment,
         });
       });
     } catch (error) {
@@ -747,6 +835,54 @@ adminRoute.post(
   }
 );
 
+// change appointment status
+adminRoute.post(
+  "/change-appointment-status",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const { app_id, appointment_status } = req.body;
+
+    try {
+      if (appointment_status == "0") {
+        req.flash("error_msg", "Please select status to update.");
+        res.redirect("/admin/all-appointment");
+      } else {
+        var sql =
+          "UPDATE appointment_book SET app_status = ? WHERE app_id = ?;";
+        connection.query(
+          sql,
+          [appointment_status, app_id],
+          (err, result, fields) => {
+            if (err) throw err;
+            req.flash(
+              "success_msg",
+              "Appointment Status Updated Successfully."
+            );
+            res.redirect("/admin/all-appointment");
+          }
+        );
+      }
+
+      var sql1 =
+        "select * from appointment_book inner join user on appointment_book.user_id = user.id where appointment_book.app_id = ?;";
+      connection.query(sql1, [app_id], (err, result, fields) => {
+        if (err) throw err;
+
+        // send email
+        sendEmail(
+          result[0].email,
+          "d-e0d5d77493ee41b998e56f35838c1144",
+          result[0].fullname,
+          `${result[0].app_id} of speciality type ${result[0].app_specialist} status is changed to ${result[0].app_status}.`
+        );
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 // change prescription status
 adminRoute.post(
   "/change-prescription-status",
@@ -858,5 +994,144 @@ adminRoute.post(
     }
   }
 );
+
+// appointment starts from here
+// post add specialities
+adminRoute.post(
+  "/add-specialities",
+  upload.single("specialitiesimage"),
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const { specialitiesname } = req.body;
+    try {
+      const output = await cloudinary.uploader.upload(req.file.path, {
+        folder: "specialist",
+      });
+      var sql =
+        "insert into specialist(name, image, cloudinary_pub_id) values (?,?,?);";
+      await connection.query(
+        sql,
+        [specialitiesname, output.secure_url, output.public_id],
+        (err, result, fields) => {
+          if (err) throw err;
+          req.flash("success_msg", "Specialities added successfuly.");
+          res.redirect("/admin/all-specialities");
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// post add doctors
+adminRoute.post(
+  "/add-doctors",
+  upload.single("doctorimage"),
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const { doctorname, unit, days, specid } = req.body;
+    try {
+      var sql2 = "select * from specialist where spec_id = ?;";
+
+      await connection.query(sql2, [specid], async (err, result, fields) => {
+        if (result.length == 0) {
+          req.flash("error_msg", "Specialist is not available.");
+          res.redirect("/admin/add-doctors");
+        } else {
+          var sql = "select * from doctors where name = ? and spec_id = ?";
+          await connection.query(
+            sql,
+            [doctorname, specid],
+            async (err, result, fields) => {
+              if (result.length == 0) {
+                const output = await cloudinary.uploader.upload(req.file.path, {
+                  folder: "doctor",
+                });
+                var sql =
+                  "insert into doctors(doc_name, doc_image, cloudinary_pub_id, unit, days, spec_id) values (?,?,?,?,?,?);";
+                await connection.query(
+                  sql,
+                  [
+                    doctorname,
+                    output.secure_url,
+                    output.public_id,
+                    unit,
+                    days,
+                    specid,
+                  ],
+                  (err, result, fields) => {
+                    if (err) throw err;
+                    req.flash("success_msg", "Doctor added successfuly.");
+                    res.redirect("/admin/add-doctors");
+                  }
+                );
+              } else {
+                req.flash("error_msg", "This Doctor is already added.");
+                res.redirect("/admin/add-doctors");
+              }
+            }
+          );
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// delete specialities
+adminRoute.post(
+  "/delete-specialities/:spec_id",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const { spec_id } = req.params;
+    try {
+      var sql1 = "select cloudinary_pub_id from specialist where spec_id = ?;";
+      await connection.query(sql1, [spec_id], async (err, result, fields) => {
+        if (err) throw err;
+        cloudinary.uploader.destroy(result[0].cloudinary_pub_id);
+
+        var sql = "delete from specialist where spec_id =?;";
+        await connection.query(sql, [spec_id], (err, result, fields) => {
+          if (err) throw err;
+          req.flash("success_msg", "Specialities deleted successfuly.");
+          res.redirect("/admin/all-specialities");
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+// delete doctor
+adminRoute.post(
+  "/delete-doctors",
+  ensureAuthAdmin,
+  checkAdmin,
+  async (req, res) => {
+    const { doc_id } = req.body;
+    try {
+      var sql1 = "select cloudinary_pub_id from doctors where doc_id = ?;";
+      await connection.query(sql1, [doc_id], async (err, result, fields) => {
+        if (err) throw err;
+        cloudinary.uploader.destroy(result[0].cloudinary_pub_id);
+
+        var sql = "delete from doctors where doc_id =?;";
+        await connection.query(sql, [doc_id], (err, result, fields) => {
+          if (err) throw err;
+          req.flash("success_msg", "Doctor deleted successfuly.");
+          res.redirect("/admin/add-doctors");
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 // exporting adminRoute
 module.exports = adminRoute;

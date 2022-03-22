@@ -79,6 +79,7 @@ app.use("/blogs", require("./routers/blogRoute"));
 app.use("/comments", require("./routers/commentRoute"));
 app.use("/labtest", require("./routers/labtestRoute"));
 app.use("/medicine", require("./routers/medicineRoute"));
+app.use("/appointment", require("./routers/appointmentRoute"));
 
 // setting up view engine
 app.set("view engine", "ejs");

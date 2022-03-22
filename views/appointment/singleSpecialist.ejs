@@ -1,0 +1,146 @@
+<%- include("../partials/header") %> <%- include("../partials/navbar") %><%-
+include("../partials/messages") %>
+
+<!-- component -->
+
+<section class="text-gray-600">
+  <div class="container px-3 py-3 mx-auto">
+    <div class="flex flex-wrap w-full mb-8">
+      <div class="w-full mb-6 lg:mb-0">
+        <% if (specialities_list.length>0) { %>
+        <h1
+          class="sm:text-4xl text-5xl font-bold font-medium title-font mb-2 text-gray-900"
+        >
+          <%= specialities_list[0].name%>
+        </h1>
+        <% } %>
+        <div class="h-1 w-20 bg-indigo-500 rounded"></div>
+      </div>
+    </div>
+
+    <% uniqueDays.forEach(function(days){ %>
+
+    <h1 class="mt-4 mb-5 font-bold text-xl"><%= days%></h1>
+
+    <button
+      id="payment-button"
+      class="p-2 pr-3 bg-transparent border-2 border-indigo-500 text-indigo-500 text-sm rounded-lg hover:bg-indigo-500 hover:text-gray-100 focus:border-4 focus:border-indigo-300"
+    >
+      Pay for <%= days%>
+    </button>
+
+    <% function getSundayOfCurrentWeek(num) {%> <% const today = new Date();%>
+    <% const first = today.getDate() - today.getDay() + 1;%> <% const last =
+    first + parseInt(num);%> <% const sunday = new Date(today.setDate(last));%>
+    <% return sunday;%> <% }%> <% let count %> <% if (days == "Sunday") { %> <%
+    count = 6; %> <% } else if (days == "Monday") { %> <% count = 0; %> <% }
+    else if (days == "Tuesday") { %> <% count = 1; %> <% } else if (days ==
+    "Wednesday") { %> <% count = 2; %> <%} else if (days == "Thursday") { %>
+    <%count = 3; %> <% } else if (days == "Friday") { %> <% count = 4; %> <% }
+    %> <% let a = getSundayOfCurrentWeek(count); %>
+
+    <!-- khalti ko integrate  -->
+    <script src="https://khalti.s3.ap-south-1.amazonaws.com/KPG/dist/2020.12.17.0.0.0/khalti-checkout.iffe.js"></script>
+
+    <input type="hidden" value="<%= a %>" id="app_date" name="app_date" />
+    <input
+      type="hidden"
+      value="<%= specialities_list[0].name %>"
+      id="app_specialist"
+      name="app_specialist"
+    />
+
+    <script>
+      var app_date = document.getElementById("app_date").value;
+      var app_specialist = document.getElementById("app_specialist").value;
+      var config = {
+        // replace the publicKey with yours
+        publicKey: "<%= pub_key%>",
+        productIdentity: "9863858053",
+        productName: "DLX",
+        productUrl: "http://gameofthrones.wikia.com/wiki/Dragons",
+        paymentPreference: [
+          "KHALTI",
+          "EBANKING",
+          "MOBILE_BANKING",
+          "CONNECT_IPS",
+          "SCT",
+        ],
+        eventHandler: {
+          onSuccess(payload) {
+            // hit merchant api for initiating verfication
+            console.log(payload);
+
+            $.post("/appointment/verify-payment", {
+              data: payload,
+              app_date: app_date,
+              app_specialist: app_specialist,
+              success: function (response) {
+                console.log(response);
+              },
+              error: function (error) {
+                console.log(error);
+              },
+            });
+          },
+          onError(error) {
+            console.log(error);
+          },
+          onClose() {
+            console.log("widget is closing");
+          },
+        },
+      };
+
+      var checkout = new KhaltiCheckout(config);
+      var btn = document.getElementById("payment-button");
+
+      btn.onclick = function () {
+        // minimum transaction amount must be 10, i.e 1000 in paisa.
+        checkout.show({ amount: 20000 });
+      };
+    </script>
+    <!-- khalti ko integrate  -->
+
+    <h1 class="mt-4 mb-5 font-bold text-xl"><%= a%></h1>
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 container px-3 py-3 mx-auto"
+    >
+      <% if (specialities_list) { %> <%
+      specialities_list.forEach(function(eachspecialist){ %> <% if
+      (eachspecialist.days == days) { %>
+      <div
+        class="flex flex-col items-center justify-center bg-white p-4 shadow rounded-lg"
+      >
+        <div
+          class="inline-flex shadow-lg border border-gray-200 rounded-full overflow-hidden h-40 w-40"
+        >
+          <img
+            src="<%= eachspecialist.doc_image %>"
+            alt=""
+            class="h-full w-full"
+          />
+        </div>
+
+        <h1 class="mt-4 font-bold text-xl"><%= eachspecialist.doc_name %></h1>
+        <h6 class="mt-2 text-sm font-medium"><%= eachspecialist.days %></h6>
+        <h6 class="mt-2 text-sm font-medium">
+          Unit: <%= eachspecialist.unit %>
+        </h6>
+      </div>
+      <% } %> <% }); %> <%}%>
+    </div>
+    <%})%>
+  </div>
+</section>
+<script
+  src="https://code.jquery.com/jquery-3.5.1.js"
+  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+  integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+  crossorigin="anonymous"
+></script>
+<%- include("../partials/footNav") %> <%- include("../partials/footer") %>

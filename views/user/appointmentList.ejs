@@ -1,0 +1,79 @@
+<%- include("../partials/header") %> <%- include("../partials/navbar") %> <%-
+include("../partials/messages") %>
+
+<section class="text-gray-600">
+  <div class="container px-5 py-5 mx-auto">
+    <div class="flex flex-wrap w-full mb-8">
+      <div class="w-full mb-6 lg:mb-0">
+        <h1
+          class="sm:text-4xl text-5xl font-medium title-font mb-2 text-gray-900"
+        >
+         Your Booked Appointment
+        </h1>
+        <div class="h-1 w-20 bg-indigo-500 rounded"></div>
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <div
+        class="bg-gray-100 flex items-center justify-center bg-gray-100 font-sans overflow-hidden"
+      >
+        <div class="w-full lg:w-5/6">
+          <div class="bg-white shadow-md rounded my-6">
+            <table class="min-w-max w-full table-auto">
+              <thead>
+                <tr
+                  class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal"
+                >
+                  <th class="py-3 px-6 text-center">Id</th>
+                  <th class="py-3 px-6 text-center">Booked By</th>
+                  <th class="py-3 px-6 text-center">Booked Date</th>
+                  <th class="py-3 px-6 text-center">Total Price</th>
+                  <th class="py-3 px-6 text-center">Type</th>
+                  <th class="py-3 px-6 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody class="text-gray-600 text-sm font-light">
+                <%if (appointment_list){ %> <% appointment_list.forEach(function(eachappointment){
+                %>
+                <tr class="border-b border-gray-200 hover:bg-gray-100">
+                  <td class="py-3 px-6 text-center">
+                    <div class="flex items-center justify-center text-blue-500">
+                      
+                        <%= eachappointment.app_id %>
+                    </div>
+                  </td>
+                  <td class="py-3 px-6 text-center">
+                    <%= eachappointment.fullname %>
+                  </td>
+                  <td class="py-3 px-6 text-center">
+                    <div class="flex item-center justify-center">
+                      <%= eachappointment.app_date %>
+                    </div>
+                  </td>
+                  <td class="py-3 px-6 text-center">
+                    <div class="flex item-center justify-center">
+                      <%= eachappointment.app_price %>
+                    </div>
+                  </td>
+                  <td class="py-3 px-6 text-center">
+                    <div class="flex item-center justify-center">
+                      <%= eachappointment.app_specialist %>
+                    </div>
+                  </td>
+                  <td class="py-3 px-6 text-center">
+                    <div class="flex item-center justify-center">
+                      <%= eachappointment.app_status %>
+                    </div>
+                  </td>
+                </tr>
+                <% }); %> <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footNav") %> <%- include("../partials/footer") %>
