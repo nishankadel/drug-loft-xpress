@@ -1046,7 +1046,7 @@ adminRoute.post(
             sql,
             [doctorname, specid],
             async (err, result, fields) => {
-              if (result.length == 0) {
+              if (typeof result == "undefined" || result.length == 0) {
                 const output = await cloudinary.uploader.upload(req.file.path, {
                   folder: "doctor",
                 });

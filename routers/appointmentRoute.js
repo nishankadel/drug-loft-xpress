@@ -4,6 +4,7 @@ const { ensureAuth } = require("../middlewares/protectedRoute");
 const connection = require("../db/connection");
 require("dotenv").config();
 const axios = require("axios");
+const { sendEmail } = require("../middlewares/sendEmail");
 
 //creating appointmentRoute
 const appointmentRoute = express.Router();
